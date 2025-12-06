@@ -9,7 +9,7 @@ import kotlin.math.abs
  */
 class SyncNsTemporaryBasalTransaction(private val temporaryBasals: List<TemporaryBasal>, private val nsClientMode: Boolean) : Transaction<SyncNsTemporaryBasalTransaction.TransactionResult>() {
 
-    override fun run(): TransactionResult {
+    override suspend fun run(): TransactionResult {
         val result = TransactionResult()
 
         for (temporaryBasal in temporaryBasals) {
@@ -43,7 +43,7 @@ class SyncNsTemporaryBasalTransaction(private val temporaryBasals: List<Temporar
                 }
 
                 // not known nsId
-                val running = database.temporaryBasalDao.getTemporaryBasalActiveAt(temporaryBasal.timestamp).blockingGet()
+                val running = database.temporaryBasalDao.getTemporaryBasalActiveAt(temporaryBasal.timestamp)
                 if (running != null && abs(running.timestamp - temporaryBasal.timestamp) < 1000) { // allow missing milliseconds
                     // the same record, update nsId only
                     running.interfaceIDs.nightscoutId = temporaryBasal.interfaceIDs.nightscoutId
