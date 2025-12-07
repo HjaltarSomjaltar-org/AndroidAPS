@@ -308,15 +308,11 @@ class AppRepository @Inject internal constructor(
         }
     }
 
-    fun getTemporaryTargetDataFromTime(timestamp: Long, ascending: Boolean): Single<List<TemporaryTarget>> = rxSingle {
-        val result = database.temporaryTargetDao.getTemporaryTargetDataFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getTemporaryTargetDataFromTime(timestamp: Long, ascending: Boolean): List<TemporaryTarget> =
+        database.temporaryTargetDao.getTemporaryTargetDataFromTime(timestamp).reversedIf(!ascending)
 
-    fun getTemporaryTargetDataIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<TemporaryTarget>> = rxSingle {
-        val result = database.temporaryTargetDao.getTemporaryTargetDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getTemporaryTargetDataIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<TemporaryTarget> =
+        database.temporaryTargetDao.getTemporaryTargetDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getTemporaryTargetActiveAt(timestamp: Long): Maybe<TemporaryTarget> = rxMaybe {
         database.temporaryTargetDao.getTemporaryTargetActiveAt(timestamp)
@@ -327,13 +323,11 @@ class AppRepository @Inject internal constructor(
     }
 
     // USER ENTRY
-    fun getUserEntryDataFromTime(timestamp: Long): Single<List<UserEntry>> = rxSingle {
+    suspend fun getUserEntryDataFromTime(timestamp: Long): List<UserEntry> =
         database.userEntryDao.getUserEntryDataFromTime(timestamp)
-    }
 
-    fun getUserEntryFilteredDataFromTime(timestamp: Long): Single<List<UserEntry>> = rxSingle {
+    suspend fun getUserEntryFilteredDataFromTime(timestamp: Long): List<UserEntry> =
         database.userEntryDao.getUserEntryFilteredDataFromTime(UserEntry.Sources.Loop, timestamp)
-    }
 
     suspend fun insert(word: UserEntry) {
         database.userEntryDao.insert(word)
@@ -374,15 +368,11 @@ class AppRepository @Inject internal constructor(
         database.profileSwitchDao.getAllProfileSwitches()
     }
 
-    fun getProfileSwitchesFromTime(timestamp: Long, ascending: Boolean): Single<List<ProfileSwitch>> = rxSingle {
-        val result = database.profileSwitchDao.getProfileSwitchDataFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getProfileSwitchesFromTime(timestamp: Long, ascending: Boolean): List<ProfileSwitch> =
+        database.profileSwitchDao.getProfileSwitchDataFromTime(timestamp).reversedIf(!ascending)
 
-    fun getProfileSwitchesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<ProfileSwitch>> = rxSingle {
-        val result = database.profileSwitchDao.getProfileSwitchDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getProfileSwitchesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<ProfileSwitch> =
+        database.profileSwitchDao.getProfileSwitchDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getLastProfileSwitchId(): Long? = runBlocking {
         database.profileSwitchDao.getLastId()
@@ -422,20 +412,16 @@ class AppRepository @Inject internal constructor(
         database.runningModeDao.getAllRunningModes()
     }
 
-    fun getRunningModesFromTime(timestamp: Long, ascending: Boolean): Single<List<RunningMode>> = rxSingle {
-        val result = database.runningModeDao.getRunningModeDataFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getRunningModesFromTime(timestamp: Long, ascending: Boolean): List<RunningMode> =
+        database.runningModeDao.getRunningModeDataFromTime(timestamp).reversedIf(!ascending)
 
     fun getRunningModesFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): Single<List<RunningMode>> = rxSingle {
         val result = database.runningModeDao.getRunningModeDataFromTimeToTime(startTime, endTime)
         if (!ascending) result.reversed() else result
     }
 
-    fun getRunningModesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<RunningMode>> = rxSingle {
-        val result = database.runningModeDao.getRunningModeDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getRunningModesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<RunningMode> =
+        database.runningModeDao.getRunningModeDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getLastRunningModeId(): Long? = runBlocking {
         database.runningModeDao.getLastId()
@@ -472,15 +458,11 @@ class AppRepository @Inject internal constructor(
         database.effectiveProfileSwitchDao.getEffectiveProfileSwitchActiveAt(timestamp)
     }
 
-    fun getEffectiveProfileSwitchesFromTime(timestamp: Long, ascending: Boolean): Single<List<EffectiveProfileSwitch>> = rxSingle {
-        val result = database.effectiveProfileSwitchDao.getEffectiveProfileSwitchDataFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getEffectiveProfileSwitchesFromTime(timestamp: Long, ascending: Boolean): List<EffectiveProfileSwitch> =
+        database.effectiveProfileSwitchDao.getEffectiveProfileSwitchDataFromTime(timestamp).reversedIf(!ascending)
 
-    fun getEffectiveProfileSwitchesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<EffectiveProfileSwitch>> = rxSingle {
-        val result = database.effectiveProfileSwitchDao.getEffectiveProfileSwitchDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getEffectiveProfileSwitchesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<EffectiveProfileSwitch> =
+        database.effectiveProfileSwitchDao.getEffectiveProfileSwitchDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getEffectiveProfileSwitchesFromTimeToTime(start: Long, end: Long, ascending: Boolean): Single<List<EffectiveProfileSwitch>> = rxSingle {
         val result = database.effectiveProfileSwitchDao.getEffectiveProfileSwitchDataFromTimeToTime(start, end)
@@ -514,20 +496,16 @@ class AppRepository @Inject internal constructor(
         }
     }
 
-    fun getTherapyEventDataFromTime(timestamp: Long, ascending: Boolean): Single<List<TherapyEvent>> = rxSingle {
-        val result = database.therapyEventDao.getTherapyEventDataFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getTherapyEventDataFromTime(timestamp: Long, ascending: Boolean): List<TherapyEvent> =
+        database.therapyEventDao.getTherapyEventDataFromTime(timestamp).reversedIf(!ascending)
 
     fun getTherapyEventDataFromTime(timestamp: Long, type: TherapyEvent.Type, ascending: Boolean): Single<List<TherapyEvent>> = rxSingle {
         val result = database.therapyEventDao.getTherapyEventDataFromTime(timestamp, type)
         if (!ascending) result.reversed() else result
     }
 
-    fun getTherapyEventDataIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<TherapyEvent>> = rxSingle {
-        val result = database.therapyEventDao.getTherapyEventDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getTherapyEventDataIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<TherapyEvent> =
+        database.therapyEventDao.getTherapyEventDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getLastTherapyRecordUpToNow(type: TherapyEvent.Type): Maybe<TherapyEvent> = rxMaybe {
         database.therapyEventDao.getLastTherapyRecord(type, System.currentTimeMillis())
@@ -603,20 +581,16 @@ class AppRepository @Inject internal constructor(
         database.bolusDao.getOldestBolusRecord()
     }
 
-    fun getBolusesDataFromTime(timestamp: Long, ascending: Boolean): Single<List<Bolus>> = rxSingle {
-        val result = database.bolusDao.getBolusesFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getBolusesDataFromTime(timestamp: Long, ascending: Boolean): List<Bolus> =
+        database.bolusDao.getBolusesFromTime(timestamp).reversedIf(!ascending)
 
     fun getBolusesDataFromTimeToTime(from: Long, to: Long, ascending: Boolean): Single<List<Bolus>> = rxSingle {
         val result = database.bolusDao.getBolusesFromTime(from, to)
         if (!ascending) result.reversed() else result
     }
 
-    fun getBolusesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<Bolus>> = rxSingle {
-        val result = database.bolusDao.getBolusesIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getBolusesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<Bolus> =
+        database.bolusDao.getBolusesIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getLastBolusId(): Long? = runBlocking {
         database.bolusDao.getLastId()
@@ -667,10 +641,8 @@ class AppRepository @Inject internal constructor(
         database.carbsDao.getOldestCarbsRecord()
     }
 
-    fun getCarbsDataFromTime(timestamp: Long, ascending: Boolean): Single<List<Carbs>> = rxSingle {
-        val result = database.carbsDao.getCarbsFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getCarbsDataFromTime(timestamp: Long, ascending: Boolean): List<Carbs> =
+        database.carbsDao.getCarbsFromTime(timestamp).reversedIf(!ascending)
 
     fun getCarbsDataFromTimeExpanded(timestamp: Long, ascending: Boolean): Single<List<Carbs>> = rxSingle {
         val data = database.carbsDao.getCarbsFromTimeExpandable(timestamp)
@@ -692,10 +664,8 @@ class AppRepository @Inject internal constructor(
         if (!ascending) sorted.reversed() else sorted
     }
 
-    fun getCarbsIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<Carbs>> = rxSingle {
-        val result = database.carbsDao.getCarbsIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getCarbsIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<Carbs> =
+        database.carbsDao.getCarbsIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getLastCarbsId(): Long? = runBlocking {
         database.carbsDao.getLastId()
@@ -724,15 +694,11 @@ class AppRepository @Inject internal constructor(
         }
     }
 
-    fun getBolusCalculatorResultsDataFromTime(timestamp: Long, ascending: Boolean): Single<List<BolusCalculatorResult>> = rxSingle {
-        val data = database.bolusCalculatorResultDao.getBolusCalculatorResultsFromTime(timestamp)
-        if (!ascending) data.reversed() else data
-    }
+    suspend fun getBolusCalculatorResultsDataFromTime(timestamp: Long, ascending: Boolean): List<BolusCalculatorResult> =
+        database.bolusCalculatorResultDao.getBolusCalculatorResultsFromTime(timestamp).reversedIf(!ascending)
 
-    fun getBolusCalculatorResultsIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): Single<List<BolusCalculatorResult>> = rxSingle {
-        val data = database.bolusCalculatorResultDao.getBolusCalculatorResultsIncludingInvalidFromTime(timestamp)
-        if (!ascending) data.reversed() else data
-    }
+    suspend fun getBolusCalculatorResultsIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<BolusCalculatorResult> =
+        database.bolusCalculatorResultDao.getBolusCalculatorResultsIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getLastBolusCalculatorResultId(): Long? = runBlocking {
         database.bolusCalculatorResultDao.getLastId()
@@ -792,20 +758,16 @@ class AppRepository @Inject internal constructor(
         database.temporaryBasalDao.getTemporaryBasalActiveBetweenTimeAndTime(from, to)
     }
 
-    fun getTemporaryBasalsStartingFromTime(timestamp: Long, ascending: Boolean): Single<List<TemporaryBasal>> = rxSingle {
-        val result = database.temporaryBasalDao.getTemporaryBasalDataFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getTemporaryBasalsStartingFromTime(timestamp: Long, ascending: Boolean): List<TemporaryBasal> =
+        database.temporaryBasalDao.getTemporaryBasalDataFromTime(timestamp).reversedIf(!ascending)
 
     fun getTemporaryBasalsStartingFromTimeToTime(from: Long, to: Long, ascending: Boolean): Single<List<TemporaryBasal>> = rxSingle {
         val result = database.temporaryBasalDao.getTemporaryBasalStartingFromTimeToTime(from, to)
         if (!ascending) result.reversed() else result
     }
 
-    fun getTemporaryBasalsStartingFromTimeIncludingInvalid(timestamp: Long, ascending: Boolean): Single<List<TemporaryBasal>> = rxSingle {
-        val result = database.temporaryBasalDao.getTemporaryBasalDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getTemporaryBasalsStartingFromTimeIncludingInvalid(timestamp: Long, ascending: Boolean): List<TemporaryBasal> =
+        database.temporaryBasalDao.getTemporaryBasalDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getOldestTemporaryBasalRecord(): Maybe<TemporaryBasal> = rxMaybe {
         database.temporaryBasalDao.getOldestRecord()
@@ -843,20 +805,16 @@ class AppRepository @Inject internal constructor(
         database.extendedBolusDao.getExtendedBolusActiveAt(timestamp)
     }
 
-    fun getExtendedBolusesStartingFromTime(timestamp: Long, ascending: Boolean): Single<List<ExtendedBolus>> = rxSingle {
-        val result = database.extendedBolusDao.getExtendedBolusesStartingFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getExtendedBolusesStartingFromTime(timestamp: Long, ascending: Boolean): List<ExtendedBolus> =
+        database.extendedBolusDao.getExtendedBolusesStartingFromTime(timestamp).reversedIf(!ascending)
 
     fun getExtendedBolusesStartingFromTimeToTime(start: Long, end: Long, ascending: Boolean): Single<List<ExtendedBolus>> = rxSingle {
         val result = database.extendedBolusDao.getExtendedBolusDataFromTimeToTime(start, end)
         if (!ascending) result.reversed() else result
     }
 
-    fun getExtendedBolusStartingFromTimeIncludingInvalid(timestamp: Long, ascending: Boolean): Single<List<ExtendedBolus>> = rxSingle {
-        val result = database.extendedBolusDao.getExtendedBolusDataIncludingInvalidFromTime(timestamp)
-        if (!ascending) result.reversed() else result
-    }
+    suspend fun getExtendedBolusStartingFromTimeIncludingInvalid(timestamp: Long, ascending: Boolean): List<ExtendedBolus> =
+        database.extendedBolusDao.getExtendedBolusDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
     fun getOldestExtendedBolusRecord(): Maybe<ExtendedBolus> = rxMaybe {
         database.extendedBolusDao.getOldestRecord()
@@ -948,10 +906,5 @@ class AppRepository @Inject internal constructor(
         repositoryScope.cancel()
     }
 
+    fun <T> Iterable<T>.reversedIf(reverse: Boolean): List<T> = if (reverse) this.reversed() else this.toList()
 }
-
-@Suppress("USELESS_CAST", "unused")
-inline fun <reified T : Any> Maybe<T>.toWrappedSingle(): Single<ValueWrapper<T>> =
-    this.map { ValueWrapper.Existing(it) as ValueWrapper<T> }
-        .switchIfEmpty(Maybe.just(ValueWrapper.Absent()))
-        .toSingle()

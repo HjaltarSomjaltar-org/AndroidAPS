@@ -55,6 +55,7 @@ import app.aaps.plugins.main.R
 import app.aaps.plugins.main.iob.iobCobCalculator.data.AutosensDataStoreObject
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
@@ -522,7 +523,7 @@ class IobCobCalculatorPlugin @Inject constructor(
         val divisor = preferences.get(DoubleKey.ApsAmaBolusSnoozeDivisor)
         assert(divisor > 0)
 
-        val boluses = persistenceLayer.getBolusesFromTimeBlocking(toTime - range(), true).blockingGet()
+        val boluses = runBlocking { persistenceLayer.getBolusesFromTime(toTime - range(), true) }
 
         boluses.forEach { t ->
             if (t.isValid && t.timestamp < toTime) {

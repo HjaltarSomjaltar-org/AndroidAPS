@@ -15,6 +15,7 @@ import app.aaps.core.interfaces.resources.ResourceHelper
 import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.ui.viewmodels.TreatmentConstants.TREATMENT_HISTORY_DAYS
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -87,6 +88,7 @@ class RunningModeViewModel @Inject constructor(
     /**
      * Subscribe to running mode change events using Flow
      */
+    @OptIn(FlowPreview::class)
     private fun observeRunningModeChanges() {
         persistenceLayer
             .observeChanges<RM>()

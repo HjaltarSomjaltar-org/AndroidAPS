@@ -43,6 +43,7 @@ import app.aaps.core.keys.interfaces.StringNonPreferenceKey
 import app.aaps.core.keys.interfaces.StringPreferenceKey
 import app.aaps.core.keys.interfaces.UnitDoublePreferenceKey
 import dagger.Lazy
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.max
@@ -340,9 +341,10 @@ class PreferencesImpl @Inject constructor(
 
     private fun limit(key: DoublePreferenceKey, calculated: Double) = min(key.max, max(key.min, calculated))
     private fun recentMaxBolus(): Double =
-        persistenceLayer
-            .getBolusesFromTimeBlocking(dateUtil.now() - T.days(7).msecs(), true)
-            .blockingGet()
-            .maxOfOrNull { it.amount }
-            ?: hardLimits.get().maxBolus()
+        runBlocking {
+            persistenceLayer
+                .getBolusesFromTime(dateUtil.now() - T.days(7).msecs(), true)
+                .maxOfOrNull { it.amount }
+                ?: hardLimits.get().maxBolus()
+        }
 }

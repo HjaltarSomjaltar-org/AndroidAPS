@@ -27,6 +27,7 @@ import app.aaps.core.validators.preferences.AdaptiveDoublePreference
 import app.aaps.core.validators.preferences.AdaptiveIntPreference
 import app.aaps.plugins.sensitivity.extensions.isPSEvent5minBack
 import app.aaps.plugins.sensitivity.extensions.isTherapyEventEvent5minBack
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import java.util.Arrays
 import javax.inject.Inject
@@ -69,7 +70,7 @@ class SensitivityAAPSPlugin @Inject constructor(
             return AutosensResult()
         }
         val siteChanges = persistenceLayer.getTherapyEventDataFromTime(fromTime, TE.Type.CANNULA_CHANGE, true)
-        val profileSwitches = persistenceLayer.getProfileSwitchesFromTimeBlocking(fromTime, true).blockingGet()
+        val profileSwitches = runBlocking { persistenceLayer.getProfileSwitchesFromTime(fromTime, true) }
         val deviationsArray: MutableList<Double> = ArrayList()
         var pastSensitivity = ""
         var index = 0

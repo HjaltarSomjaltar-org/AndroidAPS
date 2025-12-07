@@ -20,6 +20,7 @@ import app.aaps.core.interfaces.utils.DecimalFormatter
 import app.aaps.ui.compose.MealLink
 import app.aaps.ui.viewmodels.TreatmentConstants.TREATMENT_HISTORY_DAYS
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -117,6 +118,7 @@ class BolusCarbsViewModel @Inject constructor(
      * Subscribe to treatment change events using Flow
      * Observes Bolus, Carbs, and BolusCalculatorResult changes
      */
+    @OptIn(FlowPreview::class)
     private fun observeTreatmentChanges() {
         merge(
             persistenceLayer.observeChanges<BS>(),

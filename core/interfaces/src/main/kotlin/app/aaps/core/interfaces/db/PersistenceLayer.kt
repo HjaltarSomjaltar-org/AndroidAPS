@@ -92,16 +92,6 @@ interface PersistenceLayer {
     fun getBolusByNSId(nsId: String): BS?
 
     /**
-     * Get boluses from time
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of boluses
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getBolusesFromTime(startTime, ascending)"))
-    fun getBolusesFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<BS>>
-
-    /**
      * Get boluses from time (suspend variant)
      *
      * @param startTime from
@@ -119,16 +109,6 @@ interface PersistenceLayer {
      * @return List of boluses
      */
     fun getBolusesFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): List<BS>
-
-    /**
-     * Get boluses from time including invalidated
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of boluses
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getBolusesFromTimeIncludingInvalid(startTime, ascending)"))
-    fun getBolusesFromTimeIncludingInvalidBlocking(startTime: Long, ascending: Boolean): Single<List<BS>>
 
     /**
      * Get boluses from time including invalidated (suspend variant)
@@ -239,16 +219,6 @@ interface PersistenceLayer {
     fun getCarbsByNSId(nsId: String): CA?
 
     /**
-     * Get carbs from time
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of carbs
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getCarbsFromTime(startTime, ascending)"))
-    fun getCarbsFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<CA>>
-
-    /**
      * Get carbs from time (suspend variant)
      *
      * @param startTime from
@@ -256,16 +226,6 @@ interface PersistenceLayer {
      * @return List of carbs
      */
     suspend fun getCarbsFromTime(startTime: Long, ascending: Boolean): List<CA>
-
-    /**
-     * Get carbs from time including invalidated
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of boluses
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getCarbsFromTimeIncludingInvalid(startTime, ascending)"))
-    fun getCarbsFromTimeIncludingInvalidBlocking(startTime: Long, ascending: Boolean): Single<List<CA>>
 
     /**
      * Get carbs from time including invalidated (suspend variant)
@@ -380,29 +340,9 @@ interface PersistenceLayer {
      *
      * @param startTime from
      * @param ascending sort order
-     * @return List of BCRs as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getBolusCalculatorResultsFromTime(startTime, ascending)"))
-    fun getBolusCalculatorResultsFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<BCR>>
-
-    /**
-     * Get BCRs starting from time
-     *
-     * @param startTime from
-     * @param ascending sort order
      * @return List of BCRs
      */
     suspend fun getBolusCalculatorResultsFromTime(startTime: Long, ascending: Boolean): List<BCR>
-
-    /**
-     * Get BCRs starting from time including invalided records
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of BCRs as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getBolusCalculatorResultsIncludingInvalidFromTime(startTime, ascending)"))
-    fun getBolusCalculatorResultsIncludingInvalidFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<BCR>>
 
     /**
      * Get BCRs starting from time including invalided records
@@ -533,27 +473,7 @@ interface PersistenceLayer {
      * @param ascending sort order
      * @return List of effective profile switches
      */
-    @Deprecated("Use suspend variant", ReplaceWith("getEffectiveProfileSwitchesFromTime(startTime, ascending)"))
-    fun getEffectiveProfileSwitchesFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<EPS>>
-
-    /**
-     * Get effective profile switches from time
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of effective profile switches
-     */
     suspend fun getEffectiveProfileSwitchesFromTime(startTime: Long, ascending: Boolean): List<EPS>
-
-    /**
-     * Get effective profile switches from time including invalid records
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of effective profile switches
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getEffectiveProfileSwitchesIncludingInvalidFromTime(startTime, ascending)"))
-    fun getEffectiveProfileSwitchesIncludingInvalidFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<EPS>>
 
     /**
      * Get effective profile switches from time including invalid records
@@ -662,27 +582,7 @@ interface PersistenceLayer {
      * @param ascending sort order
      * @return List of profile switches
      */
-    @Deprecated("Use suspend variant", ReplaceWith("getProfileSwitchesFromTime(startTime, ascending)"))
-    fun getProfileSwitchesFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<PS>>
-
-    /**
-     * Get profile switches from time
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of profile switches
-     */
     suspend fun getProfileSwitchesFromTime(startTime: Long, ascending: Boolean): List<PS>
-
-    /**
-     * Get profile switches from time including invalidated records
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of profile switches
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getProfileSwitchesIncludingInvalidFromTime(startTime, ascending)"))
-    fun getProfileSwitchesIncludingInvalidFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<PS>>
 
     /**
      * Get profile switches from time including invalidated records
@@ -786,16 +686,6 @@ interface PersistenceLayer {
      * @param ascending sort order
      * @return List of running modes
      */
-    @Deprecated("Use suspend variant", ReplaceWith("getRunningModesFromTime(startTime, ascending)"))
-    fun getRunningModesFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<RM>>
-
-    /**
-     * Get running modes from time
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of running modes
-     */
     suspend fun getRunningModesFromTime(startTime: Long, ascending: Boolean): List<RM>
 
     /**
@@ -807,15 +697,6 @@ interface PersistenceLayer {
      * @return List of running modes
      */
     fun getRunningModesFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): List<RM>
-    /**
-     * Get running modes from time including invalidated records
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of running modes
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getRunningModesIncludingInvalidFromTime(startTime, ascending)"))
-    fun getRunningModesIncludingInvalidFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<RM>>
 
     /**
      * Get running modes from time including invalidated records
@@ -940,16 +821,6 @@ interface PersistenceLayer {
     fun getTemporaryBasalsStartingFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): List<TB>
 
     /**
-     * Get running temporary basal starting from time including
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of temporary basals as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getTemporaryBasalsStartingFromTime(startTime, ascending)"))
-    fun getTemporaryBasalsStartingFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<TB>>
-
-    /**
      * Get running temporary basal starting from time (suspend variant)
      *
      * @param startTime from
@@ -957,16 +828,6 @@ interface PersistenceLayer {
      * @return List of temporary basals
      */
     suspend fun getTemporaryBasalsStartingFromTime(startTime: Long, ascending: Boolean): List<TB>
-
-    /**
-     * Get running temporary basal starting from time including invalided records
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of temporary basals as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getTemporaryBasalsStartingFromTimeIncludingInvalid(startTime, ascending)"))
-    fun getTemporaryBasalsStartingFromTimeIncludingInvalidBlocking(startTime: Long, ascending: Boolean): Single<List<TB>>
 
     /**
      * Get running temporary basal starting from time including invalided records (suspend variant)
@@ -1108,16 +969,6 @@ interface PersistenceLayer {
     fun getExtendedBolusesStartingFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): List<EB>
 
     /**
-     * Get running extended boluses starting from time
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of extended boluses as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getExtendedBolusesStartingFromTime(startTime, ascending)"))
-    fun getExtendedBolusesStartingFromTimeBlocking(startTime: Long, ascending: Boolean): Single<List<EB>>
-
-    /**
      * Get running extended boluses starting from time (suspend variant)
      *
      * @param startTime from
@@ -1125,16 +976,6 @@ interface PersistenceLayer {
      * @return List of extended boluses
      */
     suspend fun getExtendedBolusesStartingFromTime(startTime: Long, ascending: Boolean): List<EB>
-
-    /**
-     * Get running extended boluses starting from time including invalided records
-     *
-     * @param startTime from
-     * @param ascending sort order
-     * @return List of extended boluses as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getExtendedBolusStartingFromTimeIncludingInvalid(startTime, ascending)"))
-    fun getExtendedBolusStartingFromTimeIncludingInvalidBlocking(startTime: Long, ascending: Boolean): Single<List<EB>>
 
     /**
      * Get running extended boluses starting from time including invalided records (suspend variant)
@@ -1223,16 +1064,6 @@ interface PersistenceLayer {
     fun getTemporaryTargetByNSId(nsId: String): TT?
 
     /**
-     * Get temporary targets from time
-     *
-     * @param timestamp from
-     * @param ascending sort order
-     * @return List of temporary targets as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getTemporaryTargetDataFromTime(timestamp, ascending)"))
-    fun getTemporaryTargetDataFromTimeBlocking(timestamp: Long, ascending: Boolean): Single<List<TT>>
-
-    /**
      * Get temporary targets from time (suspend variant)
      *
      * @param timestamp from
@@ -1240,16 +1071,6 @@ interface PersistenceLayer {
      * @return List of temporary targets
      */
     suspend fun getTemporaryTargetDataFromTime(timestamp: Long, ascending: Boolean): List<TT>
-
-    /**
-     * Get temporary targets from time including invalidated
-     *
-     * @param timestamp from
-     * @param ascending sort order
-     * @return List of temporary targets as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getTemporaryTargetDataIncludingInvalidFromTime(timestamp, ascending)"))
-    fun getTemporaryTargetDataIncludingInvalidFromTimeBlocking(timestamp: Long, ascending: Boolean): Single<List<TT>>
 
     /**
      * Get temporary targets from time including invalidated (suspend variant)
@@ -1316,16 +1137,6 @@ interface PersistenceLayer {
     fun getTherapyEventDataFromToTime(from: Long, to: Long): Single<List<TE>>
 
     /**
-     * Get therapy events from time including invalidated
-     *
-     * @param timestamp from
-     * @param ascending sort order
-     * @return List of therapy events as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getTherapyEventDataIncludingInvalidFromTime(timestamp, ascending)"))
-    fun getTherapyEventDataIncludingInvalidFromTimeBlocking(timestamp: Long, ascending: Boolean): Single<List<TE>>
-
-    /**
      * Get therapy events from time including invalidated (suspend variant)
      *
      * @param timestamp from
@@ -1333,16 +1144,6 @@ interface PersistenceLayer {
      * @return List of therapy events including invalidated ones
      */
     suspend fun getTherapyEventDataIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<TE>
-
-    /**
-     * Get therapy events from time
-     *
-     * @param timestamp from
-     * @param ascending sort order
-     * @return List of therapy events as Single
-     */
-    @Deprecated("Use suspend variant", ReplaceWith("getTherapyEventDataFromTime(timestamp, ascending)"))
-    fun getTherapyEventDataFromTimeBlocking(timestamp: Long, ascending: Boolean): Single<List<TE>>
 
     /**
      * Get therapy events from time (suspend variant)
@@ -1533,13 +1334,7 @@ interface PersistenceLayer {
     // UE
     fun insertUserEntries(entries: List<UE>): Single<TransactionResult<UE>>
 
-    @Deprecated("Use suspend variant", ReplaceWith("getUserEntryDataFromTime(timestamp)"))
-    fun getUserEntryDataFromTimeBlocking(timestamp: Long): Single<List<UE>>
-
     suspend fun getUserEntryDataFromTime(timestamp: Long): List<UE>
-
-    @Deprecated("Use suspend variant", ReplaceWith("getUserEntryFilteredDataFromTime(timestamp)"))
-    fun getUserEntryFilteredDataFromTimeBlocking(timestamp: Long): Single<List<UE>>
 
     suspend fun getUserEntryFilteredDataFromTime(timestamp: Long): List<UE>
 

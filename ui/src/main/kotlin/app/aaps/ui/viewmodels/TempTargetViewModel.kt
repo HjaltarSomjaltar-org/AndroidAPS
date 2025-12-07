@@ -19,6 +19,7 @@ import app.aaps.ui.compose.ToolbarConfig
 import app.aaps.ui.compose.TreatmentScreenToolbar
 import app.aaps.ui.viewmodels.TreatmentConstants.TREATMENT_HISTORY_DAYS
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -92,6 +93,7 @@ class TempTargetViewModel @Inject constructor(
     /**
      * Subscribe to temp target change events using Flow
      */
+    @OptIn(FlowPreview::class)
     private fun observeTempTargetChanges() {
         persistenceLayer
             .observeChanges<TT>()
