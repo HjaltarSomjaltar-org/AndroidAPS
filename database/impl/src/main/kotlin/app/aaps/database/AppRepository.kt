@@ -259,9 +259,8 @@ class AppRepository @Inject internal constructor(
         database.glucoseValueDao.getLastId()
     }
 
-    fun getLastGlucoseValue(): GlucoseValue? = runBlocking {
+    suspend fun getLastGlucoseValue(): GlucoseValue? =
         database.glucoseValueDao.getLast()
-    }
 
     /*
        * returns a Pair of the next entity to sync and the ID of the "update".

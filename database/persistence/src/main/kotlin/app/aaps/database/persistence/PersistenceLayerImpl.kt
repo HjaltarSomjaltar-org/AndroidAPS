@@ -638,8 +638,9 @@ class PersistenceLayerImpl @Inject constructor(
             }
 
     // GV
-    override fun getLastGlucoseValue(): GV? =
+    override suspend fun getLastGlucoseValue(): GV? = withContext(Dispatchers.IO) {
         repository.getLastGlucoseValue()?.fromDb()
+    }
 
     override fun getLastGlucoseValueId(): Long? = repository.getLastGlucoseValueId()
 

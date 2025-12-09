@@ -56,6 +56,7 @@ import app.aaps.ui.databinding.DialogWizardBinding
 import dagger.android.support.DaggerDialogFragment
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import java.text.DecimalFormat
 import javax.inject.Inject
 import javax.inject.Provider
@@ -179,7 +180,7 @@ class WizardDialog : DaggerDialogFragment() {
         // because loop doesn't add missing insulin
         var percentage = preferences.get(IntKey.OverviewBolusPercentage)
         val time = preferences.get(IntKey.OverviewResetBolusPercentageTime).toLong()
-        persistenceLayer.getLastGlucoseValue().let {
+        runBlocking { persistenceLayer.getLastGlucoseValue() }.let {
             // if last value is older or there is no bg
             if (it != null) {
                 if (it.timestamp < dateUtil.now() - T.mins(time).msecs())

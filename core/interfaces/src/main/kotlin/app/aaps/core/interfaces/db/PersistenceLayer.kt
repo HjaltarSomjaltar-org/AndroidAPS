@@ -405,7 +405,7 @@ interface PersistenceLayer {
     fun invalidateBolusCalculatorResult(id: Long, action: Action, source: Sources, note: String? = null, listValues: List<ValueWithUnit>): Single<TransactionResult<BCR>>
 
     // GV
-    fun getLastGlucoseValue(): GV?
+    suspend fun getLastGlucoseValue(): GV?
 
     /**
      *  Get highest id in database
