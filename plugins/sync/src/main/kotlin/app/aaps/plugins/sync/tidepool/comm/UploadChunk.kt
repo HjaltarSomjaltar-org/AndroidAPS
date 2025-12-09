@@ -22,6 +22,7 @@ import app.aaps.plugins.sync.tidepool.elements.WizardElement
 import app.aaps.plugins.sync.tidepool.events.EventTidepoolStatus
 import app.aaps.plugins.sync.tidepool.keys.TidepoolLongNonKey
 import app.aaps.plugins.sync.tidepool.utils.GsonInstance
+import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,7 +43,7 @@ class UploadChunk @Inject constructor(
 
     private val maxUploadSize = T.days(7).msecs() // don't change this
 
-    fun getNext(session: Session?): String? {
+    suspend fun getNext(session: Session?): String? {
         session ?: return null
 
         session.start = getLastEnd()
@@ -57,7 +58,7 @@ class UploadChunk @Inject constructor(
         return result
     }
 
-    fun get(start: Long, end: Long): String {
+    suspend fun get(start: Long, end: Long): String {
 
         aapsLogger.debug(LTag.TIDEPOOL, "Syncing data between: " + dateUtil.dateAndTimeString(start) + " -> " + dateUtil.dateAndTimeString(end))
         if (end <= start) {
@@ -119,7 +120,7 @@ class UploadChunk @Inject constructor(
 
     }
 
-    private fun getBgReadings(start: Long, end: Long): List<SensorGlucoseElement> {
+    private suspend fun getBgReadings(start: Long, end: Long): List<SensorGlucoseElement> {
         val readings = persistenceLayer.getBgReadingsDataFromTimeToTime(start, end, true)
         val selection = SensorGlucoseElement.fromBgReadings(readings, dateUtil)
         if (selection.isNotEmpty())

@@ -28,6 +28,7 @@ import app.aaps.core.keys.interfaces.Preferences
 import app.aaps.core.objects.extensions.convertedToPercent
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import java.time.Clock
 import java.time.Instant
 import javax.inject.Inject
@@ -130,9 +131,8 @@ class LoopHubImpl @Inject constructor(
     }
 
     /** Retrieves the glucose values starting at from. */
-    override fun getGlucoseValues(from: Instant, ascending: Boolean): List<GV> {
-        return persistenceLayer.getBgReadingsDataFromTime(from.toEpochMilli(), ascending)
-            .blockingGet()
+    override fun getGlucoseValues(from: Instant, ascending: Boolean): List<GV> = runBlocking {
+        persistenceLayer.getBgReadingsDataFromTime(from.toEpochMilli(), ascending)
     }
 
     /** Notifies the system that carbs were eaten and stores the value. */

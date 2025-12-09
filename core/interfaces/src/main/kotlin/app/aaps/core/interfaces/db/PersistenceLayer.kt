@@ -420,8 +420,8 @@ interface PersistenceLayer {
      * @return database record
      */
     fun getNextSyncElementGlucoseValue(id: Long): Maybe<Pair<GV, GV>>
-    fun getBgReadingsDataFromTimeToTime(start: Long, end: Long, ascending: Boolean): List<GV>
-    fun getBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): Single<List<GV>>
+    suspend fun getBgReadingsDataFromTimeToTime(start: Long, end: Long, ascending: Boolean): List<GV>
+    suspend fun getBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): List<GV>
     fun getBgReadingByNSId(nsId: String): GV?
 
     /**

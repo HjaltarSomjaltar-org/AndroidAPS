@@ -647,14 +647,13 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getNextSyncElementGlucoseValue(id)
             .map { pair -> Pair(pair.first.fromDb(), pair.second.fromDb()) }
 
-    override fun getBgReadingsDataFromTimeToTime(start: Long, end: Long, ascending: Boolean): List<GV> =
-        repository.compatGetBgReadingsDataFromTime(start, end, ascending)
-            .map { list -> list.asSequence().map { it.fromDb() }.toList() }
-            .blockingGet()
+    override suspend fun getBgReadingsDataFromTimeToTime(start: Long, end: Long, ascending: Boolean): List<GV> = withContext(Dispatchers.IO) {
+        repository.compatGetBgReadingsDataFromTime(start, end, ascending).map { it.fromDb() }
+    }
 
-    override fun getBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): Single<List<GV>> =
-        repository.compatGetBgReadingsDataFromTime(timestamp, ascending)
-            .map { list -> list.asSequence().map { it.fromDb() }.toList() }
+    override suspend fun getBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): List<GV> = withContext(Dispatchers.IO) {
+        repository.compatGetBgReadingsDataFromTime(timestamp, ascending).map { it.fromDb() }
+    }
 
     override fun getBgReadingByNSId(nsId: String): GV? =
         repository.findBgReadingByNSId(nsId)?.fromDb()

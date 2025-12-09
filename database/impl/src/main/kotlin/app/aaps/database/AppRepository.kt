@@ -244,15 +244,11 @@ class AppRepository @Inject internal constructor(
     fun clearCachedTddData(from: Long) = database.totalDailyDoseDao.deleteNewerThan(from, InterfaceIDs.PumpType.CACHE)
 
     //BG READINGS -- only valid records
-    fun compatGetBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): Single<List<GlucoseValue>> = rxSingle {
-        val data = database.glucoseValueDao.compatGetBgReadingsDataFromTime(timestamp)
-        if (!ascending) data.reversed() else data
-    }
+    suspend fun compatGetBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): List<GlucoseValue> =
+        database.glucoseValueDao.compatGetBgReadingsDataFromTime(timestamp).reversedIf(!ascending)
 
-    fun compatGetBgReadingsDataFromTime(start: Long, end: Long, ascending: Boolean): Single<List<GlucoseValue>> = rxSingle {
-        val data = database.glucoseValueDao.compatGetBgReadingsDataFromTime(start, end)
-        if (!ascending) data.reversed() else data
-    }
+    suspend fun compatGetBgReadingsDataFromTime(start: Long, end: Long, ascending: Boolean): List<GlucoseValue> =
+        database.glucoseValueDao.compatGetBgReadingsDataFromTime(start, end).reversedIf(!ascending)
 
     //BG READINGS -- including invalid/history records
     fun findBgReadingByNSId(nsId: String): GlucoseValue? = runBlocking {

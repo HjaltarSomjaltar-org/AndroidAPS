@@ -54,7 +54,7 @@ open class AutotuneIob @Inject constructor(
     private var endBG: Long = 0
     private fun range(): Long = (60 * 60 * 1000L * dia + T.hours(2).msecs()).toLong()
 
-    fun initializeData(from: Long, to: Long, tunedProfile: ATProfile) {
+    suspend fun initializeData(from: Long, to: Long, tunedProfile: ATProfile) {
         dia = tunedProfile.dia
         startBG = from
         endBG = to
@@ -90,7 +90,7 @@ open class AutotuneIob @Inject constructor(
         boluses = ArrayList(boluses.toList().sortedWith { o1: BS, o2: BS -> if (o2.timestamp > o1.timestamp) 1 else -1 })
     }
 
-    private fun initializeBgReadings(from: Long, to: Long) {
+    private suspend fun initializeBgReadings(from: Long, to: Long) {
         glucose = persistenceLayer.getBgReadingsDataFromTimeToTime(from, to, false)
     }
 
