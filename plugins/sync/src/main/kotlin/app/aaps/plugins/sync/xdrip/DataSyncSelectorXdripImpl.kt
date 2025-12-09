@@ -17,6 +17,7 @@ import app.aaps.core.utils.JsonHelper
 import app.aaps.plugins.sync.xdrip.events.EventXdripNewLog
 import app.aaps.plugins.sync.xdrip.keys.XdripLongKey
 import dagger.Lazy
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -129,7 +130,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
         preferences.remove(XdripLongKey.RunningModeLastSyncedId)
         preferences.remove(XdripLongKey.ProfileStoreLastSyncedId)
 
-        val lastDeviceStatusDbId = persistenceLayer.getLastDeviceStatusId()
+        val lastDeviceStatusDbId = runBlocking { persistenceLayer.getLastDeviceStatusId() }
         if (lastDeviceStatusDbId != null) preferences.put(XdripLongKey.DeviceStatusLastSyncedId, lastDeviceStatusDbId)
         else preferences.remove(XdripLongKey.DeviceStatusLastSyncedId)
     }
@@ -141,7 +142,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
         }
     }
 
-    private fun processChangedGlucoseValues() {
+    private suspend fun processChangedGlucoseValues() {
         var progress: String
         while (true) {
             val lastDbId = persistenceLayer.getLastGlucoseValueId() ?: 0L
@@ -195,7 +196,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedBoluses() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastBolusId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastBolusId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.BolusLastSyncedId)
             if (startId > lastDbId) {
@@ -225,7 +226,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedCarbs() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastCarbsId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastCarbsId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.CarbsLastSyncedId)
             if (startId > lastDbId) {
@@ -255,7 +256,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedBolusCalculatorResults() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastBolusCalculatorResultId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastBolusCalculatorResultId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.BolusCalculatorLastSyncedId)
             if (startId > lastDbId) {
@@ -282,7 +283,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
         }
     }
 
-    private fun processChangedTempTargets() {
+    private suspend fun processChangedTempTargets() {
         var progress: String
         while (true) {
             val lastDbId = persistenceLayer.getLastTemporaryTargetId() ?: 0L
@@ -315,7 +316,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedFoods() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastFoodId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastFoodId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.FoodLastSyncedId)
             if (startId > lastDbId) {
@@ -344,7 +345,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedTherapyEvents() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastTherapyEventId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastTherapyEventId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.TherapyEventLastSyncedId)
             if (startId > lastDbId) {
@@ -373,7 +374,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
 
     private fun processChangedDeviceStatuses() {
         while (true) {
-            val lastDbId = persistenceLayer.getLastDeviceStatusId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastDeviceStatusId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.DeviceStatusLastSyncedId)
             if (startId > lastDbId) {
@@ -400,7 +401,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedTemporaryBasals() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastTemporaryBasalId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastTemporaryBasalId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.TemporaryBasalLastSyncedId)
             if (startId > lastDbId) {
@@ -430,7 +431,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedExtendedBoluses() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastExtendedBolusId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastExtendedBolusId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.ExtendedBolusLastSyncedId)
             if (startId > lastDbId) {
@@ -463,7 +464,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedProfileSwitches() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastProfileSwitchId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastProfileSwitchId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.ProfileSwitchLastSyncedId)
             if (startId > lastDbId) {
@@ -493,7 +494,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedEffectiveProfileSwitches() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastEffectiveProfileSwitchId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastEffectiveProfileSwitchId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.EffectiveProfileSwitchLastSyncedId)
             if (startId > lastDbId) {
@@ -523,7 +524,7 @@ class DataSyncSelectorXdripImpl @Inject constructor(
     private fun processChangedRunningModes() {
         var progress: String
         while (true) {
-            val lastDbId = persistenceLayer.getLastRunningModeId() ?: 0L
+            val lastDbId = runBlocking { persistenceLayer.getLastRunningModeId() } ?: 0L
             if (!isEnabled) return
             var startId = preferences.get(XdripLongKey.RunningModeLastSyncedId)
             if (startId > lastDbId) {

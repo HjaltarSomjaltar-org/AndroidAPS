@@ -83,7 +83,7 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastBolusId(): Long?
+    suspend fun getLastBolusId(): Long?
 
     /**
      *  Get bolus by NS id
@@ -210,7 +210,7 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastCarbsId(): Long?
+    suspend fun getLastCarbsId(): Long?
 
     /**
      *  Get carbs by NS id
@@ -366,7 +366,7 @@ interface PersistenceLayer {
      *
      * @return database record id
      */
-    fun getLastBolusCalculatorResultId(): Long?
+    suspend fun getLastBolusCalculatorResultId(): Long?
 
     /**
      * Insert or update if exists record
@@ -411,7 +411,7 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastGlucoseValueId(): Long?
+    suspend fun getLastGlucoseValueId(): Long?
 
     /**
      * Get next changed record after id
@@ -422,7 +422,7 @@ interface PersistenceLayer {
     fun getNextSyncElementGlucoseValue(id: Long): Maybe<Pair<GV, GV>>
     suspend fun getBgReadingsDataFromTimeToTime(start: Long, end: Long, ascending: Boolean): List<GV>
     suspend fun getBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): List<GV>
-    fun getBgReadingByNSId(nsId: String): GV?
+    suspend fun getBgReadingByNSId(nsId: String): GV?
 
     /**
      * Invalidate record with id
@@ -507,7 +507,7 @@ interface PersistenceLayer {
      *
      * @return database record id
      */
-    fun getLastEffectiveProfileSwitchId(): Long?
+    suspend fun getLastEffectiveProfileSwitchId(): Long?
 
     /**
      * Insert new record to database
@@ -558,7 +558,7 @@ interface PersistenceLayer {
      *  Get profile switch by NS id
      *  @return profile switch
      */
-    fun getProfileSwitchByNSId(nsId: String): PS?
+    suspend fun getProfileSwitchByNSId(nsId: String): PS?
 
     /**
      * Get running profile switch at time with duration == 0 (infinite)
@@ -606,7 +606,7 @@ interface PersistenceLayer {
      *
      * @return database record id
      */
-    fun getLastProfileSwitchId(): Long?
+    suspend fun getLastProfileSwitchId(): Long?
 
     /**
      * Insert or update new record in database
@@ -720,7 +720,7 @@ interface PersistenceLayer {
      *
      * @return database record id
      */
-    fun getLastRunningModeId(): Long?
+    suspend fun getLastRunningModeId(): Long?
 
     /**
      * Cancel temporary running mode if there is some running at provided timestamp
@@ -793,7 +793,7 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastTemporaryBasalId(): Long?
+    suspend fun getLastTemporaryBasalId(): Long?
 
     /**
      *  Get temporary basal by NS id
@@ -950,7 +950,7 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastExtendedBolusId(): Long?
+    suspend fun getLastExtendedBolusId(): Long?
 
     /**
      *  Get extended bolus by NS id
@@ -1055,13 +1055,13 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastTemporaryTargetId(): Long?
+    suspend fun getLastTemporaryTargetId(): Long?
 
     /**
      *  Get temporary target by NS id
      *  @return temporary target
      */
-    fun getTemporaryTargetByNSId(nsId: String): TT?
+    suspend fun getTemporaryTargetByNSId(nsId: String): TT?
 
     /**
      * Get temporary targets from time (suspend variant)
@@ -1125,7 +1125,7 @@ interface PersistenceLayer {
      *  Get highest id in database
      *  @return id
      */
-    fun getLastTherapyEventId(): Long?
+    suspend fun getLastTherapyEventId(): Long?
 
     /**
      *  Get therapy event by NS id
@@ -1243,7 +1243,7 @@ interface PersistenceLayer {
      *
      * @return database record id
      */
-    fun getLastDeviceStatusId(): Long?
+    suspend fun getLastDeviceStatusId(): Long?
 
     fun insertDeviceStatus(deviceStatus: DS)
 
@@ -1303,7 +1303,7 @@ interface PersistenceLayer {
      *
      * @return database record id
      */
-    fun getLastFoodId(): Long?
+    suspend fun getLastFoodId(): Long?
 
     /**
      * Invalidate record with id

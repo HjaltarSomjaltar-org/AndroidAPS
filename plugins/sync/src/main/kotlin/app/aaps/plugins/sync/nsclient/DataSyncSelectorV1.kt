@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -150,7 +151,7 @@ class DataSyncSelectorV1 @Inject constructor(
         preferences.remove(NsclientLongKey.RunningModeLastSyncedId)
         preferences.remove(NsclientLongKey.ProfileStoreLastSyncedId)
 
-        val lastDeviceStatusDbId = persistenceLayer.getLastDeviceStatusId()
+        val lastDeviceStatusDbId = runBlocking { persistenceLayer.getLastDeviceStatusId() }
         if (lastDeviceStatusDbId != null) preferences.put(NsclientLongKey.DeviceStatusLastSyncedId, lastDeviceStatusDbId)
         else preferences.remove(NsclientLongKey.DeviceStatusLastSyncedId)
     }

@@ -32,6 +32,7 @@ import app.aaps.core.keys.UnitDoubleKey
 import app.aaps.core.keys.interfaces.Preferences
 import app.aaps.shared.tests.TestBase
 import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -262,7 +263,7 @@ class LoopHubTest : TestBase() {
     }
 
     @Test
-    fun testGetGlucoseValues() {
+    fun testGetGlucoseValues() = runBlocking {
         val glucoseValues = listOf(
             GV(
                 timestamp = 1_000_000L, raw = 90.0, value = 93.0,
@@ -271,7 +272,7 @@ class LoopHubTest : TestBase() {
             )
         )
         whenever(persistenceLayer.getBgReadingsDataFromTime(1001_000, false))
-            .thenReturn(Single.just(glucoseValues))
+            .thenReturn(glucoseValues)
         assertArrayEquals(
             glucoseValues.toTypedArray(),
             loopHub.getGlucoseValues(Instant.ofEpochMilli(1001_000), false).toTypedArray()

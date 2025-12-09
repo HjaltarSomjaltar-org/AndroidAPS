@@ -28,6 +28,7 @@ import app.aaps.core.interfaces.pump.VirtualPump
 import app.aaps.core.interfaces.source.NSClientSource
 import app.aaps.core.keys.BooleanKey
 import app.aaps.core.keys.interfaces.Preferences
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -473,10 +474,12 @@ class StoreDataForDbImpl @Inject constructor(
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptTempTarget) || config.AAPSCLIENT)
-                    persistenceLayer.getTemporaryTargetByNSId(id)?.let { tt ->
-                        persistenceLayer.invalidateTemporaryTarget(tt.id, Action.TT_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(tt.timestamp))).blockingGet().also { result ->
-                            invalidated.add(TT::class.java.simpleName, result.invalidated.size)
-                            sendLog("TemporaryTarget", TT::class.java.simpleName)
+                    runBlocking {
+                        persistenceLayer.getTemporaryTargetByNSId(id)?.let { tt ->
+                            persistenceLayer.invalidateTemporaryTarget(tt.id, Action.TT_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(tt.timestamp))).blockingGet().also { result ->
+                                invalidated.add(TT::class.java.simpleName, result.invalidated.size)
+                                sendLog("TemporaryTarget", TT::class.java.simpleName)
+                            }
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptTbrEb) || config.AAPSCLIENT)
@@ -494,10 +497,12 @@ class StoreDataForDbImpl @Inject constructor(
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptProfileSwitch) || config.AAPSCLIENT)
-                    persistenceLayer.getProfileSwitchByNSId(id)?.let { ps ->
-                        persistenceLayer.invalidateProfileSwitch(ps.id, Action.PROFILE_SWITCH_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(ps.timestamp))).blockingGet().also { result ->
-                            invalidated.add(PS::class.java.simpleName, result.invalidated.size)
-                            sendLog("ProfileSwitch", PS::class.java.simpleName)
+                    runBlocking {
+                        persistenceLayer.getProfileSwitchByNSId(id)?.let { ps ->
+                            persistenceLayer.invalidateProfileSwitch(ps.id, Action.PROFILE_SWITCH_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(ps.timestamp))).blockingGet().also { result ->
+                                invalidated.add(PS::class.java.simpleName, result.invalidated.size)
+                                sendLog("ProfileSwitch", PS::class.java.simpleName)
+                            }
                         }
                     }
                 persistenceLayer.getBolusCalculatorResultByNSId(id)?.let { bcr ->
@@ -563,10 +568,12 @@ class StoreDataForDbImpl @Inject constructor(
     override fun updateDeletedGlucoseValuesInDb() {
         synchronized(deleteGlucoseValue) {
             deleteGlucoseValue.forEach { id ->
-                persistenceLayer.getBgReadingByNSId(id)?.let { gv ->
-                    persistenceLayer.invalidateGlucoseValue(id = gv.id, action = Action.BG_REMOVED, source = Sources.NSClient, note = null, listValues = listOf(ValueWithUnit.Timestamp(gv.timestamp))).blockingGet().also { result ->
-                        invalidated.add(GV::class.java.simpleName, result.invalidated.size)
-                        sendLog("GlucoseValue", GV::class.java.simpleName)
+                runBlocking {
+                    persistenceLayer.getBgReadingByNSId(id)?.let { gv ->
+                        persistenceLayer.invalidateGlucoseValue(id = gv.id, action = Action.BG_REMOVED, source = Sources.NSClient, note = null, listValues = listOf(ValueWithUnit.Timestamp(gv.timestamp))).blockingGet().also { result ->
+                            invalidated.add(GV::class.java.simpleName, result.invalidated.size)
+                            sendLog("GlucoseValue", GV::class.java.simpleName)
+                        }
                     }
                 }
             }

@@ -20,6 +20,7 @@ import app.aaps.plugins.sync.nsShared.extensions.onlyNsIdAdded
 import app.aaps.plugins.sync.nsclientV3.keys.NsclientBooleanKey
 import app.aaps.plugins.sync.nsclientV3.keys.NsclientLongKey
 import dagger.Lazy
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -133,7 +134,7 @@ class DataSyncSelectorV3 @Inject constructor(
         preferences.remove(NsclientLongKey.RunningModeLastSyncedId)
         preferences.remove(NsclientLongKey.ProfileStoreLastSyncedId)
 
-        val lastDeviceStatusDbId = persistenceLayer.getLastDeviceStatusId()
+        val lastDeviceStatusDbId = runBlocking { persistenceLayer.getLastDeviceStatusId() }
         if (lastDeviceStatusDbId != null) preferences.put(NsclientLongKey.DeviceStatusLastSyncedId, lastDeviceStatusDbId)
         else preferences.remove(NsclientLongKey.DeviceStatusLastSyncedId)
     }

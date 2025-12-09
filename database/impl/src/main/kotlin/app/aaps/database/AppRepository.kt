@@ -251,13 +251,11 @@ class AppRepository @Inject internal constructor(
         database.glucoseValueDao.compatGetBgReadingsDataFromTime(start, end).reversedIf(!ascending)
 
     //BG READINGS -- including invalid/history records
-    fun findBgReadingByNSId(nsId: String): GlucoseValue? = runBlocking {
+    suspend fun findBgReadingByNSId(nsId: String): GlucoseValue? =
         database.glucoseValueDao.findByNSId(nsId)
-    }
 
-    fun getLastGlucoseValueId(): Long? = runBlocking {
+    suspend fun getLastGlucoseValueId(): Long? =
         database.glucoseValueDao.getLastId()
-    }
 
     suspend fun getLastGlucoseValue(): GlucoseValue? =
         database.glucoseValueDao.getLast()
@@ -281,9 +279,8 @@ class AppRepository @Inject internal constructor(
     }
 
     // TEMP TARGETS
-    fun findTemporaryTargetByNSId(nsId: String): TemporaryTarget? = runBlocking {
+    suspend fun findTemporaryTargetByNSId(nsId: String): TemporaryTarget? =
         database.temporaryTargetDao.findByNSId(nsId)
-    }
 
     /*
        * returns a Pair of the next entity to sync and the ID of the "update".
@@ -313,9 +310,8 @@ class AppRepository @Inject internal constructor(
         database.temporaryTargetDao.getTemporaryTargetActiveAt(timestamp)
     }
 
-    fun getLastTempTargetId(): Long? = runBlocking {
+    suspend fun getLastTempTargetId(): Long? =
         database.temporaryTargetDao.getLastId()
-    }
 
     // USER ENTRY
     suspend fun getUserEntryDataFromTime(timestamp: Long): List<UserEntry> =
@@ -331,9 +327,8 @@ class AppRepository @Inject internal constructor(
 
     // PROFILE SWITCH
 
-    fun findProfileSwitchByNSId(nsId: String): ProfileSwitch? = runBlocking {
+    suspend fun findProfileSwitchByNSId(nsId: String): ProfileSwitch? =
         database.profileSwitchDao.findByNSId(nsId)
-    }
 
     fun getNextSyncElementProfileSwitch(id: Long): Maybe<Pair<ProfileSwitch, ProfileSwitch>> = rxMaybe {
         val nextIdElement = database.profileSwitchDao.getNextModifiedOrNewAfter(id) ?: return@rxMaybe null
@@ -369,9 +364,8 @@ class AppRepository @Inject internal constructor(
     suspend fun getProfileSwitchesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<ProfileSwitch> =
         database.profileSwitchDao.getProfileSwitchDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
-    fun getLastProfileSwitchId(): Long? = runBlocking {
+    suspend fun getLastProfileSwitchId(): Long? =
         database.profileSwitchDao.getLastId()
-    }
 
     // RUNNING MODE
 
@@ -418,9 +412,8 @@ class AppRepository @Inject internal constructor(
     suspend fun getRunningModesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<RunningMode> =
         database.runningModeDao.getRunningModeDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
-    fun getLastRunningModeId(): Long? = runBlocking {
+    suspend fun getLastRunningModeId(): Long? =
         database.runningModeDao.getLastId()
-    }
 
     // EFFECTIVE PROFILE SWITCH
     fun findEffectiveProfileSwitchByNSId(nsId: String): EffectiveProfileSwitch? = runBlocking {
@@ -464,9 +457,8 @@ class AppRepository @Inject internal constructor(
         if (!ascending) result.reversed() else result
     }
 
-    fun getLastEffectiveProfileSwitchId(): Long? = runBlocking {
+    suspend fun getLastEffectiveProfileSwitchId(): Long? =
         database.effectiveProfileSwitchDao.getLastId()
-    }
 
     // THERAPY EVENT
     /*
@@ -510,9 +502,8 @@ class AppRepository @Inject internal constructor(
         database.therapyEventDao.compatGetTherapyEventDataFromToTime(from, to)
     }
 
-    fun getLastTherapyEventId(): Long? = runBlocking {
+    suspend fun getLastTherapyEventId(): Long? =
         database.therapyEventDao.getLastId()
-    }
 
     // FOOD
     /*
@@ -537,9 +528,8 @@ class AppRepository @Inject internal constructor(
         database.foodDao.getFoodData()
     }
 
-    fun getLastFoodId(): Long? = runBlocking {
+    suspend fun getLastFoodId(): Long? =
         database.foodDao.getLastId()
-    }
 
     // BOLUS
     fun getBolusByNSId(nsId: String): Bolus? = runBlocking {
@@ -587,9 +577,8 @@ class AppRepository @Inject internal constructor(
     suspend fun getBolusesIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<Bolus> =
         database.bolusDao.getBolusesIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
-    fun getLastBolusId(): Long? = runBlocking {
+    suspend fun getLastBolusId(): Long? =
         database.bolusDao.getLastId()
-    }
     // CARBS
 
     fun getCarbsByNSId(nsId: String): Carbs? = runBlocking {
@@ -662,9 +651,8 @@ class AppRepository @Inject internal constructor(
     suspend fun getCarbsIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<Carbs> =
         database.carbsDao.getCarbsIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
-    fun getLastCarbsId(): Long? = runBlocking {
+    suspend fun getLastCarbsId(): Long? =
         database.carbsDao.getLastId()
-    }
 
     // BOLUS CALCULATOR RESULT
     fun findBolusCalculatorResultByNSId(nsId: String): BolusCalculatorResult? = runBlocking {
@@ -695,9 +683,8 @@ class AppRepository @Inject internal constructor(
     suspend fun getBolusCalculatorResultsIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<BolusCalculatorResult> =
         database.bolusCalculatorResultDao.getBolusCalculatorResultsIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
-    fun getLastBolusCalculatorResultId(): Long? = runBlocking {
+    suspend fun getLastBolusCalculatorResultId(): Long? =
         database.bolusCalculatorResultDao.getLastId()
-    }
 
     // DEVICE STATUS
     fun insert(deviceStatus: DeviceStatus) {
@@ -717,9 +704,8 @@ class AppRepository @Inject internal constructor(
         database.deviceStatusDao.getNextModifiedOrNewAfter(id)
     }
 
-    fun getLastDeviceStatusId(): Long? = runBlocking {
+    suspend fun getLastDeviceStatusId(): Long? =
         database.deviceStatusDao.getLastId()
-    }
 
     // TEMPORARY BASAL
     fun findTemporaryBasalByNSId(nsId: String): TemporaryBasal? = runBlocking {
@@ -768,9 +754,8 @@ class AppRepository @Inject internal constructor(
         database.temporaryBasalDao.getOldestRecord()
     }
 
-    fun getLastTemporaryBasalId(): Long? = runBlocking {
+    suspend fun getLastTemporaryBasalId(): Long? =
         database.temporaryBasalDao.getLastId()
-    }
 
     // EXTENDED BOLUS
     fun findExtendedBolusByNSId(nsId: String): ExtendedBolus? = runBlocking {
@@ -815,9 +800,8 @@ class AppRepository @Inject internal constructor(
         database.extendedBolusDao.getOldestRecord()
     }
 
-    fun getLastExtendedBolusId(): Long? = runBlocking {
+    suspend fun getLastExtendedBolusId(): Long? =
         database.extendedBolusDao.getLastId()
-    }
 
     // TotalDailyDose
     fun getLastTotalDailyDoses(count: Int, ascending: Boolean): Single<List<TotalDailyDose>> = rxSingle {

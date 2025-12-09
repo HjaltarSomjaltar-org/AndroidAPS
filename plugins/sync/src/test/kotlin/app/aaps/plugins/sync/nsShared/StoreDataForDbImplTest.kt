@@ -26,6 +26,7 @@ import app.aaps.core.interfaces.source.NSClientSource
 import app.aaps.core.keys.BooleanKey
 import app.aaps.shared.tests.TestBaseWithProfile
 import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -439,7 +440,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates temp target when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates temp target when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "tt_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -457,7 +458,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate temp target when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate temp target when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "tt_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -562,7 +563,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates profile switch when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates profile switch when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "ps_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -580,7 +581,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate profile switch when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate profile switch when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "ps_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -702,7 +703,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedGlucoseValuesInDb invalidates glucose value when found`() {
+    fun `updateDeletedGlucoseValuesInDb invalidates glucose value when found`() = runBlocking {
         val nsIdToDelete = "gv_to_delete_id"
         storeDataForDb.addToDeleteGlucoseValue(nsIdToDelete)
         whenever(persistenceLayer.getBgReadingByNSId(nsIdToDelete)).thenReturn(gv)
@@ -715,7 +716,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedGlucoseValuesInDb does nothing if glucose value is not found`() {
+    fun `updateDeletedGlucoseValuesInDb does nothing if glucose value is not found`() = runBlocking {
         val nsIdNotFound = "gv_not_in_db_id"
         storeDataForDb.addToDeleteGlucoseValue(nsIdNotFound)
         whenever(persistenceLayer.getBgReadingByNSId(nsIdNotFound)).thenReturn(null)

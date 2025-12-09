@@ -209,7 +209,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getNewestBolusOfType(type: BS.Type): BS? =
         repository.getLastBolusRecordOfType(type.toDb()).blockingGet()?.fromDb()
 
-    override fun getLastBolusId(): Long? = repository.getLastBolusId()
+    override suspend fun getLastBolusId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastBolusId()
+    }
     override fun getBolusByNSId(nsId: String): BS? = repository.getBolusByNSId(nsId)?.fromDb()
 
     override suspend fun getBolusesFromTime(startTime: Long, ascending: Boolean): List<BS> = withContext(Dispatchers.IO) {
@@ -382,7 +384,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getOldestCarbs(): CA? = repository.getOldestCarbs().blockingGet()?.fromDb()
 
     // CA
-    override fun getLastCarbsId(): Long? = repository.getLastCarbsId()
+    override suspend fun getLastCarbsId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastCarbsId()
+    }
     override fun getCarbsByNSId(nsId: String): CA? = repository.getCarbsByNSId(nsId)?.fromDb()
 
     override suspend fun getCarbsFromTime(startTime: Long, ascending: Boolean): List<CA> = withContext(Dispatchers.IO) {
@@ -572,7 +576,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getNextSyncElementBolusCalculatorResult(id)
             .map { pair -> Pair(pair.first.fromDb(), pair.second.fromDb()) }
 
-    override fun getLastBolusCalculatorResultId(): Long? = repository.getLastBolusCalculatorResultId()
+    override suspend fun getLastBolusCalculatorResultId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastBolusCalculatorResultId()
+    }
 
     override fun insertOrUpdateBolusCalculatorResult(bolusCalculatorResult: BCR): Single<PersistenceLayer.TransactionResult<BCR>> =
         repository.runTransactionForResult(InsertOrUpdateBolusCalculatorResultTransaction(bolusCalculatorResult.toDb()))
@@ -642,7 +648,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getLastGlucoseValue()?.fromDb()
     }
 
-    override fun getLastGlucoseValueId(): Long? = repository.getLastGlucoseValueId()
+    override suspend fun getLastGlucoseValueId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastGlucoseValueId()
+    }
 
     override fun getNextSyncElementGlucoseValue(id: Long): Maybe<Pair<GV, GV>> =
         repository.getNextSyncElementGlucoseValue(id)
@@ -656,8 +664,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.compatGetBgReadingsDataFromTime(timestamp, ascending).map { it.fromDb() }
     }
 
-    override fun getBgReadingByNSId(nsId: String): GV? =
+    override suspend fun getBgReadingByNSId(nsId: String): GV? = withContext(Dispatchers.IO) {
         repository.findBgReadingByNSId(nsId)?.fromDb()
+    }
 
     override fun invalidateGlucoseValue(id: Long, action: Action, source: Sources, note: String?, listValues: List<ValueWithUnit>): Single<PersistenceLayer.TransactionResult<GV>> =
         repository.runTransactionForResult(InvalidateGlucoseValueTransaction(id))
@@ -808,7 +817,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getNextSyncElementEffectiveProfileSwitch(id)
             .map { pair -> Pair(pair.first.fromDb(), pair.second.fromDb()) }
 
-    override fun getLastEffectiveProfileSwitchId(): Long? = repository.getLastEffectiveProfileSwitchId()
+    override suspend fun getLastEffectiveProfileSwitchId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastEffectiveProfileSwitchId()
+    }
     override fun insertEffectiveProfileSwitch(effectiveProfileSwitch: EPS): Single<PersistenceLayer.TransactionResult<EPS>> =
         repository.runTransactionForResult(InsertEffectiveProfileSwitchTransaction(effectiveProfileSwitch.toDb()))
             .doOnError { aapsLogger.error(LTag.DATABASE, "Error while inserting EffectiveProfileSwitch", it) }
@@ -891,7 +902,9 @@ class PersistenceLayerImpl @Inject constructor(
             }
 
     override fun getProfileSwitchActiveAt(timestamp: Long): PS? = repository.getProfileSwitchActiveAt(timestamp)?.fromDb()
-    override fun getProfileSwitchByNSId(nsId: String): PS? = repository.findProfileSwitchByNSId(nsId)?.fromDb()
+    override suspend fun getProfileSwitchByNSId(nsId: String): PS? = withContext(Dispatchers.IO) {
+        repository.findProfileSwitchByNSId(nsId)?.fromDb()
+    }
 
     override fun getPermanentProfileSwitchActiveAt(timestamp: Long): PS? =
         repository.getPermanentProfileSwitchActiveAt(timestamp).blockingGet()?.fromDb()
@@ -921,7 +934,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getNextSyncElementRunningMode(id)
             .map { pair -> Pair(pair.first.fromDb(), pair.second.fromDb()) }
 
-    override fun getLastRunningModeId(): Long? = repository.getLastRunningModeId()
+    override suspend fun getLastRunningModeId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastRunningModeId()
+    }
     override fun insertOrUpdateRunningMode(runningMode: RM, action: Action, source: Sources, note: String?, listValues: List<ValueWithUnit>): Single<PersistenceLayer.TransactionResult<RM>> =
         repository.runTransactionForResult(InsertOrUpdateRunningModeTransaction(runningMode.toDb()))
             .doOnError { aapsLogger.error(LTag.DATABASE, "Error while inserting RunningMode", it) }
@@ -1067,7 +1082,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getNextSyncElementProfileSwitch(id)
             .map { pair -> Pair(pair.first.fromDb(), pair.second.fromDb()) }
 
-    override fun getLastProfileSwitchId(): Long? = repository.getLastProfileSwitchId()
+    override suspend fun getLastProfileSwitchId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastProfileSwitchId()
+    }
     override fun insertOrUpdateProfileSwitch(profileSwitch: PS, action: Action, source: Sources, note: String?, listValues: List<ValueWithUnit>): Single<PersistenceLayer.TransactionResult<PS>> =
         repository.runTransactionForResult(InsertOrUpdateProfileSwitchTransaction(profileSwitch.toDb()))
             .doOnError { aapsLogger.error(LTag.DATABASE, "Error while inserting ProfileSwitch", it) }
@@ -1164,7 +1181,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getOldestTemporaryBasalRecord(): TB? =
         repository.getOldestTemporaryBasalRecord().blockingGet()?.fromDb()
 
-    override fun getLastTemporaryBasalId(): Long? = repository.getLastTemporaryBasalId()
+    override suspend fun getLastTemporaryBasalId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastTemporaryBasalId()
+    }
     override fun getTemporaryBasalByNSId(nsId: String): TB? = repository.findTemporaryBasalByNSId(nsId)?.fromDb()
 
     override fun getTemporaryBasalsActiveBetweenTimeAndTime(startTime: Long, endTime: Long): List<TB> =
@@ -1368,7 +1387,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getOldestExtendedBolusRecord(): EB? =
         repository.getOldestExtendedBolusRecord().blockingGet()?.fromDb()
 
-    override fun getLastExtendedBolusId(): Long? = repository.getLastExtendedBolusId()
+    override suspend fun getLastExtendedBolusId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastExtendedBolusId()
+    }
     override fun getExtendedBolusByNSId(nsId: String): EB? = repository.findExtendedBolusByNSId(nsId)?.fromDb()
 
     override fun getExtendedBolusesStartingFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): List<EB> =
@@ -1481,8 +1502,12 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getTemporaryTargetActiveAt(timestamp: Long): TT? =
         repository.getTemporaryTargetActiveAt(timestamp).blockingGet()?.fromDb()
 
-    override fun getLastTemporaryTargetId(): Long? = repository.getLastTempTargetId()
-    override fun getTemporaryTargetByNSId(nsId: String): TT? = repository.findTemporaryTargetByNSId(nsId)?.fromDb()
+    override suspend fun getLastTemporaryTargetId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastTempTargetId()
+    }
+    override suspend fun getTemporaryTargetByNSId(nsId: String): TT? = withContext(Dispatchers.IO) {
+        repository.findTemporaryTargetByNSId(nsId)?.fromDb()
+    }
 
     override suspend fun getTemporaryTargetDataFromTime(timestamp: Long, ascending: Boolean): List<TT> = withContext(Dispatchers.IO) {
         repository.getTemporaryTargetDataFromTime(timestamp, ascending)
@@ -1631,7 +1656,9 @@ class PersistenceLayerImpl @Inject constructor(
                 transactionResult
             }
 
-    override fun getLastTherapyEventId(): Long? = repository.getLastTherapyEventId()
+    override suspend fun getLastTherapyEventId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastTherapyEventId()
+    }
     override fun getTherapyEventByNSId(nsId: String): TE? = repository.findTherapyEventByNSId(nsId)?.fromDb()
 
     // TE
@@ -1800,7 +1827,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getNextSyncElementDeviceStatus(id: Long): Maybe<DS> =
         repository.getNextSyncElementDeviceStatus(id).map { it.fromDb() }
 
-    override fun getLastDeviceStatusId(): Long? = repository.getLastDeviceStatusId()
+    override suspend fun getLastDeviceStatusId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastDeviceStatusId()
+    }
 
     override fun insertDeviceStatus(deviceStatus: DS) {
         repository.insert(deviceStatus.toDb())
@@ -1851,7 +1880,9 @@ class PersistenceLayerImpl @Inject constructor(
         repository.getNextSyncElementFood(id)
             .map { pair -> Pair(pair.first.fromDb(), pair.second.fromDb()) }
 
-    override fun getLastFoodId(): Long? = repository.getLastFoodId()
+    override suspend fun getLastFoodId(): Long? = withContext(Dispatchers.IO) {
+        repository.getLastFoodId()
+    }
 
     override fun invalidateFood(id: Long, action: Action, source: Sources): Single<PersistenceLayer.TransactionResult<FD>> =
         repository.runTransactionForResult(InvalidateFoodTransaction(id))

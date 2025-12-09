@@ -76,7 +76,7 @@ class DataSyncSelectorV3Test : TestBaseWithProfile() {
     }
 
     @Test
-    fun resetToNextFullSyncTest() {
+    fun resetToNextFullSyncTest() = runBlocking {
         whenever(persistenceLayer.getLastDeviceStatusId()).thenReturn(1)
         sut.resetToNextFullSync()
         verify(preferences, Times(1)).remove(NsclientLongKey.GlucoseValueLastSyncedId)
