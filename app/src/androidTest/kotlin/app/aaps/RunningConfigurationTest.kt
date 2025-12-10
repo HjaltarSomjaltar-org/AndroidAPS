@@ -13,6 +13,7 @@ import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.database.AppRepository
 import app.aaps.di.TestApplication
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -42,7 +43,7 @@ class RunningConfigurationTest @Inject constructor() {
 
     @SuppressLint("CheckResult")
     @Test
-    fun runningConfigurationTest() {
+    fun runningConfigurationTest() = runBlocking {
 
         // There is existing RunningConfig
         assertThat(persistenceLayer.getPermanentRunningModeActiveAt(dateUtil.now()).mode).isEqualTo(RM.DEFAULT_MODE)

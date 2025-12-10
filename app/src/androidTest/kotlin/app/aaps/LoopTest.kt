@@ -33,6 +33,7 @@ import app.aaps.plugins.aps.loop.events.EventLoopSetLastRunGui
 import app.aaps.plugins.constraints.objectives.ObjectivesPlugin
 import app.aaps.plugins.sync.nsShared.NsIncomingDataProcessor
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
@@ -73,7 +74,7 @@ class LoopTest @Inject constructor() {
     }
 
     @Test
-    fun loopTest() {
+    fun loopTest() = runBlocking {
         // Prepare
         persistenceLayer.clearDatabases()
         @SuppressLint("CheckResult")

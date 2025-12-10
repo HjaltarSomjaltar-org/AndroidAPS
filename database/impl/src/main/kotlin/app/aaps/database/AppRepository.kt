@@ -241,7 +241,7 @@ class AppRepository @Inject internal constructor(
         return ret.toString()
     }
 
-    fun clearCachedTddData(from: Long) = database.totalDailyDoseDao.deleteNewerThan(from, InterfaceIDs.PumpType.CACHE)
+    suspend fun clearCachedTddData(from: Long) = database.totalDailyDoseDao.deleteNewerThan(from, InterfaceIDs.PumpType.CACHE)
 
     //BG READINGS -- only valid records
     suspend fun compatGetBgReadingsDataFromTime(timestamp: Long, ascending: Boolean): List<GlucoseValue> =
@@ -306,9 +306,8 @@ class AppRepository @Inject internal constructor(
     suspend fun getTemporaryTargetDataIncludingInvalidFromTime(timestamp: Long, ascending: Boolean): List<TemporaryTarget> =
         database.temporaryTargetDao.getTemporaryTargetDataIncludingInvalidFromTime(timestamp).reversedIf(!ascending)
 
-    fun getTemporaryTargetActiveAt(timestamp: Long): Maybe<TemporaryTarget> = rxMaybe {
+    suspend fun getTemporaryTargetActiveAt(timestamp: Long): TemporaryTarget? =
         database.temporaryTargetDao.getTemporaryTargetActiveAt(timestamp)
-    }
 
     suspend fun getLastTempTargetId(): Long? =
         database.temporaryTargetDao.getLastId()

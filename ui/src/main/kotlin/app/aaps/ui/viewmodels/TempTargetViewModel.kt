@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -159,7 +160,7 @@ class TempTargetViewModel @Inject constructor(
      * Get currently active temporary target
      */
     fun getActiveTarget(): TT? {
-        return persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+        return runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
     }
 
     /**

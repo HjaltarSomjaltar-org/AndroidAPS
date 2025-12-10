@@ -45,6 +45,7 @@ import app.aaps.core.ui.extensions.toVisibility
 import app.aaps.core.ui.extensions.toVisibilityKeepSpace
 import app.aaps.ui.R
 import dagger.android.HasAndroidInjector
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.abs
@@ -226,7 +227,7 @@ class Widget : AppWidgetProvider() {
 
     private fun updateTemporaryTarget(views: RemoteViews) {
         val units = profileFunction.getUnits()
-        val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+        val tempTarget = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
         if (tempTarget != null) {
             // this is crashing, use background as text for now
             //views.setTextColor(R.id.temp_target, rh.gc(R.color.ribbonTextWarning))

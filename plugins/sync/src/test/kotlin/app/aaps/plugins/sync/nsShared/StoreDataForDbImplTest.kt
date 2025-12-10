@@ -43,7 +43,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
-class StoreDataForDbImplTest : TestBaseWithProfile() {
+@Suppress("JUnitMalformedDeclaration") class StoreDataForDbImplTest : TestBaseWithProfile() {
 
     @Mock private lateinit var persistenceLayer: PersistenceLayer
     @Mock private lateinit var nsClientSource: NSClientSource
@@ -385,7 +385,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates bolus when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates bolus when preference is enabled`() = runBlocking {
         val nsId = "bolus_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
 
@@ -398,7 +398,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate bolus when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate bolus when preference is disabled`() = runBlocking {
         val nsId = "bolus_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
 
@@ -410,7 +410,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates carb when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates carb when preference is enabled`() = runBlocking {
         val nsId = "carb_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
 
@@ -423,7 +423,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate carb when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate carb when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "carb_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -474,7 +474,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb always invalidates bolus calculator result`() {
+    fun `updateDeletedTreatmentsInDb always invalidates bolus calculator result`() = runBlocking {
         // Arrange
         val nsId = "bcr_to_delete"
         val bcrToDelete = bcr.apply { this.id = 999L }
@@ -493,7 +493,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates temp basal when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates temp basal when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "tb_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -511,7 +511,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate temp basal when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate temp basal when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "tb_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -528,7 +528,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates extended bolus when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates extended bolus when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "eb_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -546,7 +546,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate extended bolus when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate extended bolus when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "eb_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -598,7 +598,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates effective profile switch when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates effective profile switch when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "eps_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -616,7 +616,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate effective profile switch when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate effective profile switch when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "eps_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -633,7 +633,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates running mode when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates running mode when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "rm_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -652,7 +652,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate running mode when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate running mode when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "rm_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -669,7 +669,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates therapy event when preference is enabled`() {
+    fun `updateDeletedTreatmentsInDb invalidates therapy event when preference is enabled`() = runBlocking {
         // Arrange
         val nsId = "te_to_delete"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -687,7 +687,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb does NOT invalidate therapy event when preference is disabled`() {
+    fun `updateDeletedTreatmentsInDb does NOT invalidate therapy event when preference is disabled`() = runBlocking {
         // Arrange
         val nsId = "te_to_ignore"
         storeDataForDb.addToDeleteTreatment(nsId)
@@ -730,7 +730,7 @@ class StoreDataForDbImplTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `updateDeletedTreatmentsInDb invalidates multiple different treatments in one go`() {
+    fun `updateDeletedTreatmentsInDb invalidates multiple different treatments in one go`() = runBlocking {
         // Arrange
         val bolusId = "bolus_multi_delete"
         val carbId = "carb_multi_delete"

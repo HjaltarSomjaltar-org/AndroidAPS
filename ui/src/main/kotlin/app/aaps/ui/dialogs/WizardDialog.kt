@@ -318,7 +318,7 @@ class WizardDialog : DaggerDialogFragment() {
 
     private fun onCheckedChanged(buttonView: CompoundButton, @Suppress("unused") state: Boolean) {
         saveCheckedStates()
-        binding.ttCheckbox.isEnabled = binding.bgCheckbox.isChecked && persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) != null
+        binding.ttCheckbox.isEnabled = binding.bgCheckbox.isChecked && runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) } != null
         binding.ttCheckboxIcon.visibility = binding.ttCheckbox.isEnabled.toVisibility()
         if (buttonView.id == binding.cobCheckbox.id)
             processCobCheckBox()
@@ -381,7 +381,7 @@ class WizardDialog : DaggerDialogFragment() {
     private fun initDialog() {
         val profile = profileFunction.getProfile()
         val profileStore = activePlugin.activeProfileSource.profile
-        val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+        val tempTarget = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
 
         if (profile == null || profileStore == null) {
             ToastUtils.errorToast(ctx, app.aaps.core.ui.R.string.noprofile)
@@ -463,7 +463,7 @@ class WizardDialog : DaggerDialogFragment() {
         }
 
         bg = if (binding.bgCheckbox.isChecked) bg else 0.0
-        val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+        val tempTarget = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
 
         // COB
         var cob = 0.0

@@ -489,7 +489,7 @@ class DataHandlerMobile @Inject constructor(
             sendError(rh.gs(app.aaps.core.ui.R.string.wizard_no_cob))
             return
         }
-        val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+        val tempTarget = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
 
         val bolusWizard = bolusWizardProvider.get().doCalc(
             profile = profile,
@@ -1278,7 +1278,7 @@ class DataHandlerMobile @Inject constructor(
         //temptarget
         val units = profileFunction.getUnits()
         var tempTargetLevel = 0
-        val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())?.let { tempTarget ->
+        val tempTarget = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }?.let { tempTarget ->
             tempTargetLevel = 2     // Yellow
             profileUtil.toTargetRangeString(tempTarget.lowTarget, tempTarget.highTarget, GlucoseUnit.MGDL, units)
         } ?: profileFunction.getProfile()?.let { profile ->
@@ -1389,7 +1389,7 @@ class DataHandlerMobile @Inject constructor(
             }
             val profile = profileFunction.getProfile() ?: return rh.gs(R.string.no_profile)
             //Check for Temp-Target:
-            val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+            val tempTarget = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
             if (tempTarget != null) {
                 val target = profileUtil.toTargetRangeString(tempTarget.lowTarget, tempTarget.lowTarget, GlucoseUnit.MGDL)
                 ret += rh.gs(R.string.temp_target) + ": " + target

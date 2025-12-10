@@ -1518,8 +1518,8 @@ class PersistenceLayerImpl @Inject constructor(
             }
 
     // TT
-    override fun getTemporaryTargetActiveAt(timestamp: Long): TT? =
-        repository.getTemporaryTargetActiveAt(timestamp).blockingGet()?.fromDb()
+    override suspend fun getTemporaryTargetActiveAt(timestamp: Long): TT? =
+        repository.getTemporaryTargetActiveAt(timestamp)?.fromDb()
 
     override suspend fun getLastTemporaryTargetId(): Long? = withContext(Dispatchers.IO) {
         repository.getLastTempTargetId()
@@ -1994,7 +1994,7 @@ class PersistenceLayerImpl @Inject constructor(
     }
 
     // TDD
-    override fun clearCachedTddData(timestamp: Long) = repository.clearCachedTddData(timestamp)
+    override suspend fun clearCachedTddData(timestamp: Long) = withContext(Dispatchers.IO) { repository.clearCachedTddData(timestamp) }
     override fun getLastTotalDailyDoses(count: Int, ascending: Boolean): List<TDD> =
         repository.getLastTotalDailyDoses(count, ascending).map { list -> list.asSequence().map { it.fromDb() }.toList() }.blockingGet()
 

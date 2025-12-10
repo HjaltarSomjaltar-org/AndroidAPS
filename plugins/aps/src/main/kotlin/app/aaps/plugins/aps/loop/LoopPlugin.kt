@@ -154,7 +154,7 @@ class LoopPlugin @Inject constructor(
             .observeOn(aapsSchedulers.io)
             // Skip db change of ending previous TT
             .debounce(10L, TimeUnit.SECONDS)
-            .subscribe({ invoke("EventTempTargetChange", true) }, fabricPrivacy::logException)
+            .subscribe({ runBlocking { invoke("EventTempTargetChange", true) } }, fabricPrivacy::logException)
     }
 
     private fun createNotificationChannel() {
@@ -446,8 +446,7 @@ class LoopPlugin @Inject constructor(
         return false
     }
 
-    @Synchronized
-    override fun invoke(initiator: String, allowNotification: Boolean, tempBasalFallback: Boolean) {
+    override suspend fun invoke(initiator: String, allowNotification: Boolean, tempBasalFallback: Boolean) {
         try {
             aapsLogger.debug(LTag.APS, "invoke from $initiator")
             val currentMode = runningModeRecord
@@ -639,7 +638,7 @@ class LoopPlugin @Inject constructor(
                                                     lastRun.lastSMBEnact = dateUtil.now()
                                                     scheduleBuildAndStoreDeviceStatus("applySMBRequest")
                                                 } else {
-                                                    handler?.postDelayed({ invoke("tempBasalFallback", allowNotification, true) }, 1000)
+                                                    handler?.postDelayed({ runBlocking { invoke("tempBasalFallback", allowNotification, true) } }, 1000)
                                                 }
                                                 rxBus.send(EventLoopUpdateGui())
                                             }

@@ -26,6 +26,7 @@ import app.aaps.pump.virtual.VirtualPumpPlugin
 import app.aaps.shared.tests.TestBaseWithProfile
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyLong
@@ -96,7 +97,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun iobShouldBeLimited() {
+    fun iobShouldBeLimited() = runBlocking {
         whenever(rh.gs(app.aaps.core.ui.R.string.lowglucosesuspend)).thenReturn("Low Glucose Suspend")
         whenever(rh.gs(app.aaps.core.ui.R.string.limiting_iob, HardLimits.MAX_IOB_LGS, rh.gs(app.aaps.core.ui.R.string.lowglucosesuspend))).thenReturn("Limiting IOB to %1\$.1f U because of %2\$s")
         whenever(constraintChecker.isLoopInvocationAllowed()).thenReturn(ConstraintObject(true, aapsLogger))
@@ -123,7 +124,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `minutesToEndOfSuspend returns 0 when loop is not suspended`() {
+    fun `minutesToEndOfSuspend returns 0 when loop is not suspended`() = runBlocking {
         // Arrange
         val now = 1672531200000L // Jan 1, 2023
         val runningMode = RM(mode = RM.Mode.CLOSED_LOOP, timestamp = now, duration = 0)
@@ -142,7 +143,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `minutesToEndOfSuspend returns remaining minutes for a temporary suspension`() {
+    fun `minutesToEndOfSuspend returns remaining minutes for a temporary suspension`() = runBlocking {
         // Arrange
         val startTime = 1672531200000L // Start of suspend
         val durationMins = 30L
@@ -166,7 +167,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `minutesToEndOfSuspend returns Int_MAX_VALUE for an indefinite suspension`() {
+    fun `minutesToEndOfSuspend returns Int_MAX_VALUE for an indefinite suspension`() = runBlocking {
         // Arrange
         val now = 1672531200000L
         // A non-temporary suspend has a duration of 0
@@ -183,7 +184,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `minutesToEndOfSuspend returns 0 when temporary suspension has just ended`() {
+    fun `minutesToEndOfSuspend returns 0 when temporary suspension has just ended`() = runBlocking {
         // Arrange
         val startTime = 1672531200000L
         val durationMins = 30L
@@ -205,7 +206,7 @@ class LoopPluginTest : TestBaseWithProfile() {
         assertThat(result).isEqualTo(0)
     }
 
-    private fun mockCurrentMode(mode: RM.Mode) {
+    private fun mockCurrentMode(mode: RM.Mode) = runBlocking {
         val now = 1672531200000L
         val runningMode = RM(mode = mode, timestamp = now, duration = 0)
         whenever(dateUtil.now()).thenReturn(now)
@@ -375,7 +376,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     // Helper to mock what the DB returns for the *current* active mode
-    private fun mockCurrentMode(mode: RM) {
+    private fun mockCurrentMode(mode: RM) = runBlocking {
         whenever(persistenceLayer.getRunningModeActiveAt(any())).thenReturn(mode)
     }
 
@@ -405,7 +406,7 @@ class LoopPluginTest : TestBaseWithProfile() {
     }
 
     @Test
-    fun `runningModeRecord reverts from SUSPENDED_BY_PUMP when pump is resumed`() {
+    fun `runningModeRecord reverts from SUSPENDED_BY_PUMP when pump is resumed`() = runBlocking {
         // Arrange
         setupForPreCheck()
         val suspendedByPumpMode = RM(mode = RM.Mode.SUSPENDED_BY_PUMP, timestamp = dateUtil.now() - T.mins(5).msecs(), duration = 0)

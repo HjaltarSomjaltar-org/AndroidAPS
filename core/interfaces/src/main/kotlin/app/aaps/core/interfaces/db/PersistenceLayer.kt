@@ -1049,7 +1049,7 @@ interface PersistenceLayer {
      * @param timestamp time
      * @return running temporary target or null if none is running
      */
-    fun getTemporaryTargetActiveAt(timestamp: Long): TT?
+    suspend fun getTemporaryTargetActiveAt(timestamp: Long): TT?
 
     /**
      *  Get highest id in database
@@ -1345,7 +1345,7 @@ interface PersistenceLayer {
      *
      * @param timestamp from
      */
-    fun clearCachedTddData(timestamp: Long)
+    suspend fun clearCachedTddData(timestamp: Long)
 
     /**
      * Get newest 'count' records from database

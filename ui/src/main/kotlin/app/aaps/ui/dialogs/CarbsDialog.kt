@@ -43,6 +43,7 @@ import app.aaps.ui.databinding.DialogCarbsBinding
 import com.google.common.base.Joiner
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import java.text.DecimalFormat
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
@@ -185,7 +186,7 @@ class CarbsDialog : DialogFragmentWithDate() {
 
             if (bgReading.recalculated < 72) {
 
-                val activeTT = persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now())
+                val activeTT = runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) }
                 val hypoTTDuration = preferences.get(IntKey.OverviewHypoDuration)
 
                 var shouldAutoCheckHypo = true

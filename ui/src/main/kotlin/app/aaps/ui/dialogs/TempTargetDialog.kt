@@ -32,6 +32,7 @@ import com.google.common.base.Joiner
 import com.google.common.collect.Lists
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import java.text.DecimalFormat
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
@@ -96,7 +97,7 @@ class TempTargetDialog : DialogFragmentWithDate() {
 
         // temp target
         context?.let { context ->
-            binding.targetCancel.visibility = (persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) != null).toVisibility()
+            binding.targetCancel.visibility = (runBlocking { persistenceLayer.getTemporaryTargetActiveAt(dateUtil.now()) } != null).toVisibility()
 
             reasonList = Lists.newArrayList(
                 rh.gs(app.aaps.core.ui.R.string.manual),
