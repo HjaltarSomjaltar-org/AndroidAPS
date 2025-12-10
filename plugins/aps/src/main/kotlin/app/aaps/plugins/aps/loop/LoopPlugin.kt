@@ -89,6 +89,7 @@ import app.aaps.plugins.aps.loop.events.EventLoopSetLastRunGui
 import app.aaps.plugins.aps.loop.extensions.json
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -199,7 +200,7 @@ class LoopPlugin @Inject constructor(
     override val runningModeRecord: RM
         get() {
             runningModePreCheck()
-            return persistenceLayer.getRunningModeActiveAt(dateUtil.now())
+            return runBlocking { persistenceLayer.getRunningModeActiveAt(dateUtil.now()) }
         }
 
     override fun allowedNextModes(): List<RM.Mode> {
@@ -319,7 +320,7 @@ class LoopPlugin @Inject constructor(
      */
     @VisibleForTesting
     fun runningModePreCheck() {
-        val runningMode = persistenceLayer.getRunningModeActiveAt(dateUtil.now())
+        val runningMode = runBlocking { persistenceLayer.getRunningModeActiveAt(dateUtil.now()) }
         val closedLoopAllowed = constraintChecker.isClosedLoopAllowed()
         val loopInvocationAllowed = constraintChecker.isLoopInvocationAllowed()
         val lgsModeForced = constraintChecker.isLgsForced()

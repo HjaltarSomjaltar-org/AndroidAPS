@@ -158,7 +158,9 @@ class PersistenceLayerImpl @Inject constructor(
 
     override fun clearDatabases() = repository.clearDatabases()
     override fun clearApsResults() = repository.clearApsResults()
-    override fun cleanupDatabase(keepDays: Long, deleteTrackedChanges: Boolean): String = repository.cleanupDatabase(keepDays, deleteTrackedChanges)
+    override suspend fun cleanupDatabase(keepDays: Long, deleteTrackedChanges: Boolean): String = withContext(Dispatchers.IO) {
+        repository.cleanupDatabase(keepDays, deleteTrackedChanges)
+    }
 
     // Flow-based change observation
     @Suppress("UNCHECKED_CAST")
@@ -212,7 +214,9 @@ class PersistenceLayerImpl @Inject constructor(
     override suspend fun getLastBolusId(): Long? = withContext(Dispatchers.IO) {
         repository.getLastBolusId()
     }
-    override fun getBolusByNSId(nsId: String): BS? = repository.getBolusByNSId(nsId)?.fromDb()
+    override suspend fun getBolusByNSId(nsId: String): BS? = withContext(Dispatchers.IO) {
+        repository.getBolusByNSId(nsId)?.fromDb()
+    }
 
     override suspend fun getBolusesFromTime(startTime: Long, ascending: Boolean): List<BS> = withContext(Dispatchers.IO) {
         repository.getBolusesDataFromTime(startTime, ascending)
@@ -387,7 +391,9 @@ class PersistenceLayerImpl @Inject constructor(
     override suspend fun getLastCarbsId(): Long? = withContext(Dispatchers.IO) {
         repository.getLastCarbsId()
     }
-    override fun getCarbsByNSId(nsId: String): CA? = repository.getCarbsByNSId(nsId)?.fromDb()
+    override suspend fun getCarbsByNSId(nsId: String): CA? = withContext(Dispatchers.IO) {
+        repository.getCarbsByNSId(nsId)?.fromDb()
+    }
 
     override suspend fun getCarbsFromTime(startTime: Long, ascending: Boolean): List<CA> = withContext(Dispatchers.IO) {
         repository.getCarbsDataFromTime(startTime, ascending)
@@ -561,7 +567,9 @@ class PersistenceLayerImpl @Inject constructor(
                 transactionResult
             }
 
-    override fun getBolusCalculatorResultByNSId(nsId: String): BCR? = repository.findBolusCalculatorResultByNSId(nsId)?.fromDb()
+    override suspend fun getBolusCalculatorResultByNSId(nsId: String): BCR? = withContext(Dispatchers.IO) {
+        repository.findBolusCalculatorResultByNSId(nsId)?.fromDb()
+    }
 
     // BCR
     override suspend fun getBolusCalculatorResultsFromTime(startTime: Long, ascending: Boolean): List<BCR> = withContext(Dispatchers.IO) {
@@ -796,7 +804,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getEffectiveProfileSwitchActiveAt(timestamp: Long): EPS? =
         repository.getEffectiveProfileSwitchActiveAt(timestamp).blockingGet()?.fromDb()
 
-    override fun getEffectiveProfileSwitchByNSId(nsId: String): EPS? = repository.findEffectiveProfileSwitchByNSId(nsId)?.fromDb()
+    override suspend fun getEffectiveProfileSwitchByNSId(nsId: String): EPS? = withContext(Dispatchers.IO) {
+        repository.findEffectiveProfileSwitchByNSId(nsId)?.fromDb()
+    }
 
     override suspend fun getEffectiveProfileSwitchesFromTime(startTime: Long, ascending: Boolean): List<EPS> = withContext(Dispatchers.IO) {
         repository.getEffectiveProfileSwitchesFromTime(startTime, ascending)
@@ -901,7 +911,9 @@ class PersistenceLayerImpl @Inject constructor(
                 transactionResult
             }
 
-    override fun getProfileSwitchActiveAt(timestamp: Long): PS? = repository.getProfileSwitchActiveAt(timestamp)?.fromDb()
+    override suspend fun getProfileSwitchActiveAt(timestamp: Long): PS? = withContext(Dispatchers.IO) {
+        repository.getProfileSwitchActiveAt(timestamp)?.fromDb()
+    }
     override suspend fun getProfileSwitchByNSId(nsId: String): PS? = withContext(Dispatchers.IO) {
         repository.findProfileSwitchByNSId(nsId)?.fromDb()
     }
@@ -1052,11 +1064,14 @@ class PersistenceLayerImpl @Inject constructor(
                 transactionResult
             }
 
-    override fun getRunningModeActiveAt(timestamp: Long): RM =
+    override suspend fun getRunningModeActiveAt(timestamp: Long): RM = withContext(Dispatchers.IO) {
         repository.getRunningModeActiveAt(timestamp)?.fromDb()
             ?: RM(timestamp = 0, mode = RM.DEFAULT_MODE, duration = 0)
+    }
 
-    override fun getRunningModeByNSId(nsId: String): RM? = repository.findRunningModeByNSId(nsId)?.fromDb()
+    override suspend fun getRunningModeByNSId(nsId: String): RM? = withContext(Dispatchers.IO) {
+        repository.findRunningModeByNSId(nsId)?.fromDb()
+    }
 
     override fun getPermanentRunningModeActiveAt(timestamp: Long): RM =
         repository.getPermanentRunningModeActiveAt(timestamp).blockingGet()?.fromDb()
@@ -1184,7 +1199,9 @@ class PersistenceLayerImpl @Inject constructor(
     override suspend fun getLastTemporaryBasalId(): Long? = withContext(Dispatchers.IO) {
         repository.getLastTemporaryBasalId()
     }
-    override fun getTemporaryBasalByNSId(nsId: String): TB? = repository.findTemporaryBasalByNSId(nsId)?.fromDb()
+    override suspend fun getTemporaryBasalByNSId(nsId: String): TB? = withContext(Dispatchers.IO) {
+        repository.findTemporaryBasalByNSId(nsId)?.fromDb()
+    }
 
     override fun getTemporaryBasalsActiveBetweenTimeAndTime(startTime: Long, endTime: Long): List<TB> =
         repository.getTemporaryBasalsActiveBetweenTimeAndTime(startTime, endTime).blockingGet().asSequence().map { it.fromDb() }.toList()
@@ -1390,7 +1407,9 @@ class PersistenceLayerImpl @Inject constructor(
     override suspend fun getLastExtendedBolusId(): Long? = withContext(Dispatchers.IO) {
         repository.getLastExtendedBolusId()
     }
-    override fun getExtendedBolusByNSId(nsId: String): EB? = repository.findExtendedBolusByNSId(nsId)?.fromDb()
+    override suspend fun getExtendedBolusByNSId(nsId: String): EB? = withContext(Dispatchers.IO) {
+        repository.findExtendedBolusByNSId(nsId)?.fromDb()
+    }
 
     override fun getExtendedBolusesStartingFromTimeToTime(startTime: Long, endTime: Long, ascending: Boolean): List<EB> =
         repository.getExtendedBolusesStartingFromTimeToTime(startTime, endTime, ascending)
@@ -1659,7 +1678,9 @@ class PersistenceLayerImpl @Inject constructor(
     override suspend fun getLastTherapyEventId(): Long? = withContext(Dispatchers.IO) {
         repository.getLastTherapyEventId()
     }
-    override fun getTherapyEventByNSId(nsId: String): TE? = repository.findTherapyEventByNSId(nsId)?.fromDb()
+    override suspend fun getTherapyEventByNSId(nsId: String): TE? = withContext(Dispatchers.IO) {
+        repository.findTherapyEventByNSId(nsId)?.fromDb()
+    }
 
     // TE
     override fun getLastTherapyRecordUpToNow(type: TE.Type): TE? =
@@ -2020,11 +2041,13 @@ class PersistenceLayerImpl @Inject constructor(
     override fun getStepsCountFromTime(from: Long): List<SC> =
         repository.getStepsCountFromTime(from).map { list -> list.asSequence().map { it.fromDb() }.toList() }.blockingGet()
 
-    override fun getStepsCountFromTimeToTime(startTime: Long, endTime: Long): List<SC> =
+    override suspend fun getStepsCountFromTimeToTime(startTime: Long, endTime: Long): List<SC> = withContext(Dispatchers.IO) {
         repository.getStepsCountFromTimeToTime(startTime, endTime).map { it.fromDb() }
+    }
 
-    override fun getLastStepsCountFromTimeToTime(startTime: Long, endTime: Long): SC? =
+    override suspend fun getLastStepsCountFromTimeToTime(startTime: Long, endTime: Long): SC? = withContext(Dispatchers.IO) {
         repository.getLastStepsCountFromTimeToTime(startTime, endTime)?.fromDb()
+    }
 
     override fun insertOrUpdateStepsCount(stepsCount: SC): Single<PersistenceLayer.TransactionResult<SC>> =
         repository.runTransactionForResult(InsertOrUpdateStepsCountTransaction(stepsCount.toDb()))
@@ -2046,8 +2069,9 @@ class PersistenceLayerImpl @Inject constructor(
     override fun insertVersionChangeIfChanged(versionName: String, versionCode: Int, gitRemote: String?, commitHash: String?): Completable =
         repository.runTransaction(VersionChangeTransaction(versionName, versionCode, gitRemote, commitHash))
 
-    override fun collectNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int): NE =
+    override suspend fun collectNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int): NE = withContext(Dispatchers.IO) {
         repository.collectNewEntriesSince(since, until, limit, offset).fromDb()
+    }
 
     override fun getApsResultCloseTo(timestamp: Long): APSResult? =
         repository.getApsResultCloseTo(timestamp).blockingGet()?.fromDb(apsResultProvider)

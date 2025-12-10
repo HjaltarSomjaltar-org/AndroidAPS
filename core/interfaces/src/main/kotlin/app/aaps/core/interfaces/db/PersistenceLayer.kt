@@ -46,7 +46,7 @@ interface PersistenceLayer {
      * @param keepDays remove all records older than
      * @param deleteTrackedChanges delete tracked changes from all tables
      */
-    fun cleanupDatabase(keepDays: Long, deleteTrackedChanges: Boolean): String
+    suspend fun cleanupDatabase(keepDays: Long, deleteTrackedChanges: Boolean): String
 
     // Flow-based change observation
     /**
@@ -89,7 +89,7 @@ interface PersistenceLayer {
      *  Get bolus by NS id
      *  @return bolus
      */
-    fun getBolusByNSId(nsId: String): BS?
+    suspend fun getBolusByNSId(nsId: String): BS?
 
     /**
      * Get boluses from time (suspend variant)
@@ -216,7 +216,7 @@ interface PersistenceLayer {
      *  Get carbs by NS id
      *  @return carbs
      */
-    fun getCarbsByNSId(nsId: String): CA?
+    suspend fun getCarbsByNSId(nsId: String): CA?
 
     /**
      * Get carbs from time (suspend variant)
@@ -333,7 +333,7 @@ interface PersistenceLayer {
      *  Get bolus calculator result by NS id
      *  @return bolus calculator result
      */
-    fun getBolusCalculatorResultByNSId(nsId: String): BCR?
+    suspend fun getBolusCalculatorResultByNSId(nsId: String): BCR?
 
     /**
      * Get BCRs starting from time
@@ -464,7 +464,7 @@ interface PersistenceLayer {
      *  Get bolus by NS id
      *  @return effective profile switch
      */
-    fun getEffectiveProfileSwitchByNSId(nsId: String): EPS?
+    suspend fun getEffectiveProfileSwitchByNSId(nsId: String): EPS?
 
     /**
      * Get effective profile switches from time
@@ -552,7 +552,7 @@ interface PersistenceLayer {
      * @param timestamp time
      * @return running profile switch or null if none is running
      */
-    fun getProfileSwitchActiveAt(timestamp: Long): PS?
+    suspend fun getProfileSwitchActiveAt(timestamp: Long): PS?
 
     /**
      *  Get profile switch by NS id
@@ -656,13 +656,13 @@ interface PersistenceLayer {
      * @param timestamp time
      * @return running running mode or default
      */
-    fun getRunningModeActiveAt(timestamp: Long): RM
+    suspend fun getRunningModeActiveAt(timestamp: Long): RM
 
     /**
      *  Get running mode by NS id
      *  @return running mode
      */
-    fun getRunningModeByNSId(nsId: String): RM?
+    suspend fun getRunningModeByNSId(nsId: String): RM?
 
     /**
      * Get running running mode at time with duration == 0 (infinite)
@@ -799,7 +799,7 @@ interface PersistenceLayer {
      *  Get temporary basal by NS id
      *  @return temporary basal
      */
-    fun getTemporaryBasalByNSId(nsId: String): TB?
+    suspend fun getTemporaryBasalByNSId(nsId: String): TB?
 
     /**
      * Get running temporary basal in time interval
@@ -956,7 +956,7 @@ interface PersistenceLayer {
      *  Get extended bolus by NS id
      *  @return extended bolus
      */
-    fun getExtendedBolusByNSId(nsId: String): EB?
+    suspend fun getExtendedBolusByNSId(nsId: String): EB?
 
     /**
      * Get running extended bolus starting in time interval
@@ -1131,7 +1131,7 @@ interface PersistenceLayer {
      *  Get therapy event by NS id
      *  @return therapy event
      */
-    fun getTherapyEventByNSId(nsId: String): TE?
+    suspend fun getTherapyEventByNSId(nsId: String): TE?
 
     fun getLastTherapyRecordUpToNow(type: TE.Type): TE?
     fun getTherapyEventDataFromToTime(from: Long, to: Long): Single<List<TE>>
@@ -1394,7 +1394,7 @@ interface PersistenceLayer {
      * @param endTime to
      * @return list of step count records
      */
-    fun getStepsCountFromTimeToTime(startTime: Long, endTime: Long): List<SC>
+    suspend fun getStepsCountFromTimeToTime(startTime: Long, endTime: Long): List<SC>
 
     /**
      * Get latest step counts record from interval
@@ -1403,7 +1403,7 @@ interface PersistenceLayer {
      * @param endTime to
      * @return step count record
      */
-    fun getLastStepsCountFromTimeToTime(startTime: Long, endTime: Long): SC?
+    suspend fun getLastStepsCountFromTimeToTime(startTime: Long, endTime: Long): SC?
 
     /**
      * Insert or update if exists record
@@ -1434,7 +1434,7 @@ interface PersistenceLayer {
      * @param offset
      * @return List of arrays of records
      */
-    fun collectNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int): NE
+    suspend fun collectNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int): NE
     class TransactionResult<T> {
 
         val inserted = mutableListOf<T>()

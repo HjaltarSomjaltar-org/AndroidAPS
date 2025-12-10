@@ -37,10 +37,12 @@ import app.aaps.plugins.configuration.activities.DaggerAppCompatActivityWithResu
 import app.aaps.plugins.configuration.databinding.MaintenanceFragmentBinding
 import app.aaps.plugins.configuration.maintenance.activities.LogSettingActivity
 import dagger.android.support.DaggerFragment
+import androidx.lifecycle.lifecycleScope
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MaintenanceFragment : DaggerFragment() {
@@ -133,24 +135,22 @@ class MaintenanceFragment : DaggerFragment() {
             }
         }
         binding.cleanupDb.setOnClickListener {
-            var result = ""
             uiInteraction.showOkCancelDialog(context = requireActivity(), title = R.string.maintenance, message = app.aaps.core.ui.R.string.cleanup_db_confirm, ok = {
-                disposable += Completable.fromAction { result = persistenceLayer.cleanupDatabase(93, deleteTrackedChanges = true) }
-                    .subscribeOn(aapsSchedulers.io)
-                    .observeOn(aapsSchedulers.main)
-                    .subscribeBy(
-                        onError = { aapsLogger.error("Error cleaning up databases", it) },
-                        onComplete = {
-                            if (result.isNotEmpty())
-                                uiInteraction.showOkDialog(
-                                    context = requireActivity(),
-                                    title = rh.gs(app.aaps.core.ui.R.string.result),
-                                    message = "<b>" + rh.gs(app.aaps.core.ui.R.string.cleared_entries) + "</b><br>" + result
-                                        .toSpanned()
-                                )
-                            aapsLogger.info(LTag.CORE, "Cleaned up databases with result: $result")
-                        }
-                    )
+                lifecycleScope.launch {
+                    try {
+                        val result = persistenceLayer.cleanupDatabase(93, deleteTrackedChanges = true)
+                        if (result.isNotEmpty())
+                            uiInteraction.showOkDialog(
+                                context = requireActivity(),
+                                title = rh.gs(app.aaps.core.ui.R.string.result),
+                                message = "<b>" + rh.gs(app.aaps.core.ui.R.string.cleared_entries) + "</b><br>" + result
+                                    .toSpanned()
+                            )
+                        aapsLogger.info(LTag.CORE, "Cleaned up databases with result: $result")
+                    } catch (e: Exception) {
+                        aapsLogger.error("Error cleaning up databases", e)
+                    }
+                }
                 uel.log(Action.CLEANUP_DATABASES, Sources.Maintenance)
             })
         }

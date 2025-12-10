@@ -460,14 +460,14 @@ class StoreDataForDbImpl @Inject constructor(
         synchronized(deleteTreatment) {
             deleteTreatment.forEach { id ->
                 if (preferences.get(BooleanKey.NsClientAcceptInsulin) || config.AAPSCLIENT)
-                    persistenceLayer.getBolusByNSId(id)?.let { bolus ->
+                    runBlocking { persistenceLayer.getBolusByNSId(id) }?.let { bolus ->
                         persistenceLayer.invalidateBolus(bolus.id, Action.BOLUS_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(bolus.timestamp))).blockingGet().also { result ->
                             invalidated.add(BS::class.java.simpleName, result.invalidated.size)
                             sendLog("Bolus", BS::class.java.simpleName)
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptCarbs) || config.AAPSCLIENT)
-                    persistenceLayer.getCarbsByNSId(id)?.let { carb ->
+                    runBlocking { persistenceLayer.getCarbsByNSId(id) }?.let { carb ->
                         persistenceLayer.invalidateCarbs(carb.id, Action.CARBS_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(carb.timestamp))).blockingGet().also { result ->
                             invalidated.add(CA::class.java.simpleName, result.invalidated.size)
                             sendLog("Carbs", CA::class.java.simpleName)
@@ -483,14 +483,14 @@ class StoreDataForDbImpl @Inject constructor(
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptTbrEb) || config.AAPSCLIENT)
-                    persistenceLayer.getTemporaryBasalByNSId(id)?.let { tb ->
+                    runBlocking { persistenceLayer.getTemporaryBasalByNSId(id) }?.let { tb ->
                         persistenceLayer.invalidateTemporaryBasal(tb.id, Action.TEMP_BASAL_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(tb.timestamp))).blockingGet().also { result ->
                             invalidated.add(TB::class.java.simpleName, result.invalidated.size)
                             sendLog("TemporaryBasal", TB::class.java.simpleName)
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptProfileSwitch) || config.AAPSCLIENT)
-                    persistenceLayer.getEffectiveProfileSwitchByNSId(id)?.let { eps ->
+                    runBlocking { persistenceLayer.getEffectiveProfileSwitchByNSId(id) }?.let { eps ->
                         persistenceLayer.invalidateEffectiveProfileSwitch(eps.id, Action.PROFILE_SWITCH_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(eps.timestamp))).blockingGet().also { result ->
                             invalidated.add(EPS::class.java.simpleName, result.invalidated.size)
                             sendLog("EffectiveProfileSwitch", EPS::class.java.simpleName)
@@ -505,28 +505,28 @@ class StoreDataForDbImpl @Inject constructor(
                             }
                         }
                     }
-                persistenceLayer.getBolusCalculatorResultByNSId(id)?.let { bcr ->
+                runBlocking { persistenceLayer.getBolusCalculatorResultByNSId(id) }?.let { bcr ->
                     persistenceLayer.invalidateBolusCalculatorResult(bcr.id, Action.BOLUS_CALCULATOR_RESULT_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(bcr.timestamp))).blockingGet().also { result ->
                         invalidated.add(BCR::class.java.simpleName, result.invalidated.size)
                         sendLog("BolusCalculatorResult", BCR::class.java.simpleName)
                     }
                 }
                 if (preferences.get(BooleanKey.NsClientAcceptTherapyEvent) || config.AAPSCLIENT)
-                    persistenceLayer.getTherapyEventByNSId(id)?.let { te ->
+                    runBlocking { persistenceLayer.getTherapyEventByNSId(id) }?.let { te ->
                         persistenceLayer.invalidateTherapyEvent(te.id, Action.TREATMENT_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(te.timestamp))).blockingGet().also { result ->
                             invalidated.add(TE::class.java.simpleName, result.invalidated.size)
                             sendLog("TherapyEvent", TE::class.java.simpleName)
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptRunningMode) && config.isEngineeringMode() || config.AAPSCLIENT)
-                    persistenceLayer.getRunningModeByNSId(id)?.let { rm ->
+                    runBlocking { persistenceLayer.getRunningModeByNSId(id) }?.let { rm ->
                         persistenceLayer.invalidateRunningMode(rm.id, Action.TREATMENT_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(rm.timestamp))).blockingGet().also { result ->
                             invalidated.add(RM::class.java.simpleName, result.invalidated.size)
                             sendLog("RunningMode", RM::class.java.simpleName)
                         }
                     }
                 if (preferences.get(BooleanKey.NsClientAcceptTbrEb) || config.AAPSCLIENT)
-                    persistenceLayer.getExtendedBolusByNSId(id)?.let { eb ->
+                    runBlocking { persistenceLayer.getExtendedBolusByNSId(id) }?.let { eb ->
                         persistenceLayer.invalidateExtendedBolus(eb.id, Action.EXTENDED_BOLUS_REMOVED, Sources.NSClient, null, listValues = listOf(ValueWithUnit.Timestamp(eb.timestamp))).blockingGet().also { result ->
                             invalidated.add(EB::class.java.simpleName, result.invalidated.size)
                             sendLog("EB", EB::class.java.simpleName)

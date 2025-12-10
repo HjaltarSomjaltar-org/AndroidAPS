@@ -188,7 +188,7 @@ class AppRepository @Inject internal constructor(
 
     fun clearApsResults() = database.apsResultDao.deleteAllEntries()
 
-    fun cleanupDatabase(keepDays: Long, deleteTrackedChanges: Boolean): String = runBlocking {
+    suspend fun cleanupDatabase(keepDays: Long, deleteTrackedChanges: Boolean): String {
         val than = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(keepDays)
         val removed = mutableListOf<Pair<String, Int>>()
         removed.add(Pair("APSResult", database.apsResultDao.deleteOlderThan(than)))
@@ -238,7 +238,7 @@ class AppRepository @Inject internal constructor(
         removed
             .filter { it.second > 0 }
             .map { ret.append(it.first + " " + it.second + "<br>") }
-        ret.toString()
+        return ret.toString()
     }
 
     fun clearCachedTddData(from: Long) = database.totalDailyDoseDao.deleteNewerThan(from, InterfaceIDs.PumpType.CACHE)
@@ -341,13 +341,13 @@ class AppRepository @Inject internal constructor(
         }
     }
 
-    fun getProfileSwitchActiveAt(timestamp: Long): ProfileSwitch? = runBlocking {
+    suspend fun getProfileSwitchActiveAt(timestamp: Long): ProfileSwitch? {
         val tps = database.profileSwitchDao.getTemporaryProfileSwitchActiveAt(timestamp)
         val ps = database.profileSwitchDao.getPermanentProfileSwitchActiveAt(timestamp)
         if (tps != null && ps != null)
-            return@runBlocking if (ps.timestamp > tps.timestamp) ps else tps
-        if (ps == null) return@runBlocking tps
-        ps // if (tps == null)
+            return if (ps.timestamp > tps.timestamp) ps else tps
+        if (ps == null) return tps
+        return ps // if (tps == null)
     }
 
     fun getPermanentProfileSwitchActiveAt(timestamp: Long): Maybe<ProfileSwitch> = rxMaybe {
@@ -369,9 +369,8 @@ class AppRepository @Inject internal constructor(
 
     // RUNNING MODE
 
-    fun findRunningModeByNSId(nsId: String): RunningMode? = runBlocking {
+    suspend fun findRunningModeByNSId(nsId: String): RunningMode? =
         database.runningModeDao.findByNSId(nsId)
-    }
 
     fun getNextSyncElementRunningMode(id: Long): Maybe<Pair<RunningMode, RunningMode>> = rxMaybe {
         val nextIdElement = database.runningModeDao.getNextModifiedOrNewAfter(id) ?: return@rxMaybe null
@@ -384,13 +383,13 @@ class AppRepository @Inject internal constructor(
         }
     }
 
-    fun getRunningModeActiveAt(timestamp: Long): RunningMode? = runBlocking {
+    suspend fun getRunningModeActiveAt(timestamp: Long): RunningMode? {
         val trm = database.runningModeDao.getTemporaryRunningModeActiveAt(timestamp)
         val prm = database.runningModeDao.getPermanentRunningModeActiveAt(timestamp)
         if (trm != null && prm != null)
-            return@runBlocking if (prm.timestamp > trm.timestamp) prm else trm
-        if (prm == null) return@runBlocking trm
-        prm // if (trm == null)
+            return if (prm.timestamp > trm.timestamp) prm else trm
+        if (prm == null) return trm
+        return prm // if (trm == null)
     }
 
     fun getPermanentRunningModeActiveAt(timestamp: Long): Maybe<RunningMode> = rxMaybe {
@@ -416,9 +415,8 @@ class AppRepository @Inject internal constructor(
         database.runningModeDao.getLastId()
 
     // EFFECTIVE PROFILE SWITCH
-    fun findEffectiveProfileSwitchByNSId(nsId: String): EffectiveProfileSwitch? = runBlocking {
+    suspend fun findEffectiveProfileSwitchByNSId(nsId: String): EffectiveProfileSwitch? =
         database.effectiveProfileSwitchDao.findByNSId(nsId)
-    }
 
     /*
        * returns a Pair of the next entity to sync and the ID of the "update".
@@ -468,9 +466,8 @@ class AppRepository @Inject internal constructor(
        *
        * It is a Maybe as there might be no next element.
        * */
-    fun findTherapyEventByNSId(nsId: String): TherapyEvent? = runBlocking {
+    suspend fun findTherapyEventByNSId(nsId: String): TherapyEvent? =
         database.therapyEventDao.findByNSId(nsId)
-    }
 
     fun getNextSyncElementTherapyEvent(id: Long): Maybe<Pair<TherapyEvent, TherapyEvent>> = rxMaybe {
         val nextIdElement = database.therapyEventDao.getNextModifiedOrNewAfter(id) ?: return@rxMaybe null
@@ -532,9 +529,8 @@ class AppRepository @Inject internal constructor(
         database.foodDao.getLastId()
 
     // BOLUS
-    fun getBolusByNSId(nsId: String): Bolus? = runBlocking {
+    suspend fun getBolusByNSId(nsId: String): Bolus? =
         database.bolusDao.getByNSId(nsId)
-    }
 
     /*
       * returns a Pair of the next entity to sync and the ID of the "update".
@@ -581,9 +577,8 @@ class AppRepository @Inject internal constructor(
         database.bolusDao.getLastId()
     // CARBS
 
-    fun getCarbsByNSId(nsId: String): Carbs? = runBlocking {
+    suspend fun getCarbsByNSId(nsId: String): Carbs? =
         database.carbsDao.getByNSId(nsId)
-    }
 
     private fun expandCarbs(carbs: Carbs): List<Carbs> =
         if (carbs.duration == 0L) {
@@ -655,9 +650,8 @@ class AppRepository @Inject internal constructor(
         database.carbsDao.getLastId()
 
     // BOLUS CALCULATOR RESULT
-    fun findBolusCalculatorResultByNSId(nsId: String): BolusCalculatorResult? = runBlocking {
+    suspend fun findBolusCalculatorResultByNSId(nsId: String): BolusCalculatorResult? =
         database.bolusCalculatorResultDao.findByNSId(nsId)
-    }
 
     /*
       * returns a Pair of the next entity to sync and the ID of the "update".
@@ -708,9 +702,8 @@ class AppRepository @Inject internal constructor(
         database.deviceStatusDao.getLastId()
 
     // TEMPORARY BASAL
-    fun findTemporaryBasalByNSId(nsId: String): TemporaryBasal? = runBlocking {
+    suspend fun findTemporaryBasalByNSId(nsId: String): TemporaryBasal? =
         database.temporaryBasalDao.findByNSId(nsId)
-    }
 
     /*
         * returns a Pair of the next entity to sync and the ID of the "update".
@@ -758,9 +751,8 @@ class AppRepository @Inject internal constructor(
         database.temporaryBasalDao.getLastId()
 
     // EXTENDED BOLUS
-    fun findExtendedBolusByNSId(nsId: String): ExtendedBolus? = runBlocking {
+    suspend fun findExtendedBolusByNSId(nsId: String): ExtendedBolus? =
         database.extendedBolusDao.findByNSId(nsId)
-    }
 
     /*
        * returns a Pair of the next entity to sync and the ID of the "update".
@@ -827,16 +819,13 @@ class AppRepository @Inject internal constructor(
         database.stepsCountDao.getFromTime(timeMillis)
     }
 
-    fun getStepsCountFromTimeToTime(startMillis: Long, endMillis: Long): List<StepsCount> = runBlocking {
+    suspend fun getStepsCountFromTimeToTime(startMillis: Long, endMillis: Long): List<StepsCount> =
         database.stepsCountDao.getFromTimeToTime(startMillis, endMillis)
-    }
 
-    fun getLastStepsCountFromTimeToTime(startMillis: Long, endMillis: Long): StepsCount? = runBlocking {
+    suspend fun getLastStepsCountFromTimeToTime(startMillis: Long, endMillis: Long): StepsCount? =
         database.stepsCountDao.getLastStepsCountFromTimeToTime(startMillis, endMillis)
-    }
 
-    fun collectNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int) = runBlocking {
-        NewEntries(
+    suspend fun collectNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int) = NewEntries(
         apsResults = database.apsResultDao.getNewEntriesSince(since, until, limit, offset),
         bolusCalculatorResults = database.bolusCalculatorResultDao.getNewEntriesSince(since, until, limit, offset),
         boluses = database.bolusDao.getNewEntriesSince(since, until, limit, offset),
@@ -854,8 +843,7 @@ class AppRepository @Inject internal constructor(
         versionChanges = database.versionChangeDao.getNewEntriesSince(since, until, limit, offset),
         heartRates = database.heartRateDao.getNewEntriesSince(since, until, limit, offset),
         stepsCount = database.stepsCountDao.getNewEntriesSince(since, until, limit, offset),
-        )
-    }
+    )
 
     fun getApsResultCloseTo(timestamp: Long): Maybe<APSResult> = rxMaybe {
         database.apsResultDao.getApsResult(timestamp - 5 * 60 * 1000, timestamp)

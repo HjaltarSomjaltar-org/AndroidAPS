@@ -27,6 +27,7 @@ import app.aaps.core.keys.interfaces.Preferences
 import app.aaps.core.objects.profile.ProfileSealed
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -133,7 +134,7 @@ class ProfileFunctionImpl @Inject constructor(
         return null
     }
 
-    override fun getRequestedProfile(): PS? = persistenceLayer.getProfileSwitchActiveAt(dateUtil.now())
+    override fun getRequestedProfile(): PS? = runBlocking { persistenceLayer.getProfileSwitchActiveAt(dateUtil.now()) }
 
     override fun isProfileChangePending(): Boolean {
         val requested = getRequestedProfile() ?: return false
