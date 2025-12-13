@@ -1,8 +1,16 @@
 package app.aaps.core.nssdk.localmodel.devicestatus
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 
 /**
  * NS DeviceStatus coming from uploader or AAPS
@@ -64,10 +72,42 @@ data class NSDeviceStatus(
         val aps: String? = null,
         val sensitivity: Int? = null,
         val smoothing: String? = null,
+        @Serializable(with = JsonObjectOrStringSerializer::class)
         val insulinConfiguration: JsonObject? = null,
+        @Serializable(with = JsonObjectOrStringSerializer::class)
         val apsConfiguration: JsonObject? = null,
+        @Serializable(with = JsonObjectOrStringSerializer::class)
         val sensitivityConfiguration: JsonObject? = null,
+        @Serializable(with = JsonObjectOrStringSerializer::class)
         val overviewConfiguration: JsonObject? = null,
+        @Serializable(with = JsonObjectOrStringSerializer::class)
         val safetyConfiguration: JsonObject? = null
     )
+}
+
+/**
+ * Custom serializer that handles both JsonObject and String representations
+ * Some servers send configuration fields as JSON strings instead of objects
+ */
+object JsonObjectOrStringSerializer : KSerializer<JsonObject?> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("JsonObjectOrString", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): JsonObject? {
+        return try {
+            val string = decoder.decodeString()
+            // Try to parse the string as JSON
+            if (string.isBlank() || string == "{}" || string == "null") {
+                null
+            } else {
+                Json.parseToJsonElement(string).jsonObject
+            }
+        } catch (e: Exception) {
+            // If it fails, return null
+            null
+        }
+    }
+
+    override fun serialize(encoder: Encoder, value: JsonObject?) {
+        encoder.encodeString(value?.toString() ?: "{}")
+    }
 }
